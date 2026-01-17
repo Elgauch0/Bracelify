@@ -1,0 +1,14 @@
+{
+    "name":"bracelify",
+    "dockerComposeFile":"../compose.yml",
+    "workspaceFolder": "/app",
+    "service":"php",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "github.copilot-chat",
+                "bmewburn.vscode-intelephense-client"
+            ]
+        }
+    }
+}
