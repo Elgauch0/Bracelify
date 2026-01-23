@@ -1,6 +1,6 @@
 {
     "name":"bracelify",
-    "dockerComposeFile":"../compose.yml",
+    "dockerComposeFile":"../compose.dev.yml",
     "workspaceFolder": "/app",
     "service":"php",
     "customizations": {

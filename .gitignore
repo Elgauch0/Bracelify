@@ -1,0 +1,34 @@
+# --- Symfony ---
+symfony/var/
+symfony/vendor/
+symfony/.env.local
+symfony/.env.*.local
+symfony/.env.local.php
+
+# Cache & logs
+symfony/var/cache/
+symfony/var/log/
+
+# Composer
+symfony/composer.lock
+symfony/composer.phar
+
+# Node / Front-end (si tu ajoutes un front plus tard)
+symfony/node_modules/
+symfony/public/build/
+symfony/public/bundles/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Docker local  env
+.env.*
