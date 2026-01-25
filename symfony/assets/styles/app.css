@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+
+    /* PRIMARY  Dusty Taupe  */
+    --color-primary: #bcbd8b;
+
+    /* SECONDARY  Stone Brown */
+    --color-secondary: #766153;
+
+    /* TERTIARY   Jet Black */
+    --color-tertiary: #717744;
+
+
+
+
+    /* Parchement */
+    --color-text: #eff1ed;
+    /* Dark Kaki */
+    --color-text-darker: #373d20;
+}

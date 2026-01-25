@@ -7,7 +7,12 @@
         "vscode": {
             "extensions": [
                 "github.copilot-chat",
-                "bmewburn.vscode-intelephense-client"
+                "bmewburn.vscode-intelephense-client",
+                "mblode.twig-language-2",
+                "whatwedo.twig",
+                "bmewburn.vscode-intelephense-client",
+                "bradlc.vscode-tailwindcss"
+
             ]
         }
     }

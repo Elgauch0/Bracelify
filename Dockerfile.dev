@@ -2,9 +2,7 @@ FROM dunglas/frankenphp:php8.4-bookworm
 
 
 RUN apt-get update && apt-get install -y \
-    git \
     unzip \
-    vim \
     bash \
     && rm -rf /var/lib/apt/lists/*
 
@@ -14,6 +12,9 @@ RUN install-php-extensions \
     pdo_pgsql \
     opcache \
     zip 
+
+
+
 
 
 
