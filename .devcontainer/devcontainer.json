@@ -1,6 +1,7 @@
 {
     "name":"bracelify",
     "dockerComposeFile":"../compose.dev.yml",
+    "postStartCommand": "php bin/console tailwind:build --watch",
     "workspaceFolder": "/app",
     "service":"php",
     "customizations": {

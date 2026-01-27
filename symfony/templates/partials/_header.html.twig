@@ -1,6 +1,6 @@
-<header class="bg-text shadow-md">
+<header data-controller="mobilebtn" class="bg-text shadow-md">
 	<div
-		class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+		class="max-w-7xl mx-auto px-4 py-4 flex items-center md:justify-around justify-between ">
 
 		<!-- Logo -->
 		<a href="/" class="text-2xl font-bold text-tertiary">
@@ -9,7 +9,6 @@
 
 		<!-- Navigation -->
 		<nav class="hidden md:flex space-x-8">
-			<a href="#" class="text-text-darker hover:text-text transition">Accueil</a>
 			<a href="#" class="text-text-darker hover:text-text transition">Produits</a>
 			<a href="#" class="text-text-darker hover:text-text transition">À propos</a>
 			<a href="#" class="text-text-darker hover:text-text transition">Contact</a>
@@ -21,8 +20,17 @@
 		</a>
 
 		<!-- Menu mobile -->
-		<button class="md:hidden text-text text-2xl">
+		<button data-mobilebtn-target="burger" data-action="mobilebtn#toggle" class=" md:hidden text-tertiary text-2xl">
 			☰
 		</button>
+
+
 	</div>
+	<!-- Menu mobile déroulant -->
+	<nav data-mobilebtn-target="menu" class="hidden md:hidden bg-text-darker text-text p-4 space-y-4">
+
+		<a href="#" class="block">Produits</a>
+		<a href="#" class="block">À propos</a>
+		<a href="#" class="block">Contact</a>
+	</nav>
 </header>
