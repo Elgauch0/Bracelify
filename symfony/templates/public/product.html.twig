@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{ product.name }}
+	- Ma Boutique
+{% endblock %}
+
+{% block body %}
+
+	<main class="max-w-6xl mx-auto py-10">
+
+		<a href="{{ path('app_public_products') }}" class="text-gray-600 hover:text-black transition mb-6 inline-block">
+			← Retour aux produits
+		</a>
+
+		<div
+			data-controller="gallery" class="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+			{# --- Galerie d’images --- #}
+			<div>
+				{% set firstImage = product.productImages|first %}
+
+				{# Image principale #}
+				{% if firstImage %}
+					<img src="/images/products/{{ firstImage.imageName }}" alt="{{ product.name }}" class="w-full h-96 object-cover rounded-xl shadow" data-gallery-target="mainImage">
+				{% else %}
+					<div class="w-full h-96 bg-gray-200 rounded-xl flex items-center justify-center text-gray-500">
+						Aucune image
+					</div>
+				{% endif %}
+
+				{# Miniatures #}
+				{% if product.productImages|length > 1 %}
+					<div class="grid grid-cols-4 gap-3 mt-4">
+						{% for image in product.productImages %}
+							<img src="/images/products/{{ image.imageName }}" data-action="click->gallery#change" alt="{{ product.name }}" class="h-24 w-full object-cover rounded-lg border hover:border-black cursor-pointer transition">
+						{% endfor %}
+					</div>
+				{% endif %}
+			</div>
+
+			{# --- Infos produit --- #}
+			<div class="flex flex-col justify-between">
+
+				<div>
+					<h1 class="text-3xl font-bold text-gray-900 mb-4">
+						{{ product.name }}
+					</h1>
+
+					{# Prix #}
+					{% if product.discount > 0 %}
+						<div class="mb-4">
+							<span class="text-2xl font-bold text-red-600">
+								{{ (product.price - product.discount) / 100 }}
+								€
+							</span>
+							<span class="line-through text-gray-500 ml-3">
+								{{ product.price / 100 }}
+								€
+							</span>
+						</div>
+					{% else %}
+						<p class="text-2xl font-semibold text-gray-900 mb-4">
+							{{ product.price / 100 }}
+							€
+						</p>
+					{% endif %}
+
+					{# Description #}
+					<p class="text-gray-700 leading-relaxed">
+						{{ product.description }}
+					</p>
+				</div>
+
+				{# CTA #}
+				<div class="mt-8">
+					<button class="w-full bg-black text-white py-3 rounded-lg text-lg hover:bg-gray-800 transition">
+						Ajouter au panier
+					</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</main>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<h1 class="text-3xl font-bold mb-8">Nos Produits :</h1>
+	<nav></nav>
+
+	<main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+		{% for product in products %}
+			<twig:product_card :product="product"/>
+		{% endfor %}
+	</main>
+{% endblock %}

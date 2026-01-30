@@ -81,8 +81,8 @@ class ProductImage
     }
 
 
-    public function _toString(): string
+    public function __toString(): string
     {
-        return $this->imageName;
+        return $this->imageName ?? '';
     }
 }

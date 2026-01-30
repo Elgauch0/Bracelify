@@ -9,7 +9,7 @@
 
 		<!-- Navigation -->
 		<nav class="hidden md:flex space-x-8">
-			<a href="#" class="text-text-darker hover:text-text transition">Produits</a>
+			<a href="{{ path('app_public_products') }}" class="text-text-darker hover:text-text transition">Produits</a>
 			<a href="#" class="text-text-darker hover:text-text transition">À propos</a>
 			<a href="#" class="text-text-darker hover:text-text transition">Contact</a>
 		</nav>
@@ -29,7 +29,7 @@
 	<!-- Menu mobile déroulant -->
 	<nav data-mobilebtn-target="menu" class="hidden md:hidden bg-text-darker text-text p-4 space-y-4">
 
-		<a href="#" class="block">Produits</a>
+		<a href="{{ path('app_public_products') }}" class="block">Produits</a>
 		<a href="#" class="block">À propos</a>
 		<a href="#" class="block">Contact</a>
 	</nav>
