@@ -1,13 +1,48 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+	{# Définition des classes en amont pour la clarté et éviter les bugs de formateur #}
+	{% set base_btn_class = "px-4 py-2 rounded-lg border shrink-0 transition" %}
+	{% set active_class = "bg-tertiary text-white" %}
+	{% set inactive_class = "hover:bg-tertiary hover:text-white" %}
 
-	<h1 class="text-3xl font-bold mb-8">Nos Produits :</h1>
-	<nav></nav>
+	<div class="m-12 flex flex-col items-center">
+		<h1 class="text-3xl font-bold mb-8">Nos Produits :</h1>
 
-	<main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+		{# NAV DES CATÉGORIES #}
+		<nav class="mb-8 w-full overflow-hidden">
+			<div
+				class="flex gap-4 overflow-x-auto justify-center overflow-y-hidden pb-2 scrollbar-none max-w-full">
+
+				{# Bouton : Toutes les catégories #}
+				<a href="{{ path('app_public_products') }}" class="{{ base_btn_class }} {{ not currentCategory ? active_class : inactive_class }}">
+					Toutes
+				</a>
+
+				{# Boucle sur les catégories #}
+				{% for category in categories %}
+					{# On stocke le résultat du test dans une variable pour la lisibilité #}
+					{% set is_active = (currentCategory == category.id) %}
+
+					<a href="{{ path('app_public_products', { category: category.id }) }}" class="{{ base_btn_class }} {{ is_active ? active_class : inactive_class }}">
+						{{ category.label }}
+					</a>
+				{% endfor %}
+
+			</div>
+		</nav>
+	</div>
+
+	{# GRID DES PRODUITS #}
+	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
 		{% for product in products %}
 			<twig:product_card :product="product"/>
+		{% else %}
+			{# Le bloc "else" dans un "for" est la méthode Twig recommandée pour gérer une liste vide #}
+			<p class="text-center text-gray-500 col-span-full">
+				Aucun produit disponible pour cette catégorie.
+			</p>
 		{% endfor %}
-	</main>
+	</div>
+
 {% endblock %}

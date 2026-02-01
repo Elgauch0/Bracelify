@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit ton profil
+	{{ app.user.firstName }}!
+{% endblock %}
+
+
+{% block body %}
+	<div class="max-w-4xl mx-auto py-10">
+		<h1 class="text-3xl font-bold mb-6">Modifier mon profil</h1>
+		{{ form(form) }}
+
+			<div class="bg-red-50 p-6 mt-2 rounded-lg border border-red-200">
+				<p class="text-red-600 text-sm mb-4">La suppression est définitive. Toutes vos données seront effacées (RGPD).</p>
+
+				<form
+					method="post" action="{{ path('app_profil_delete') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ?');">
+					{# Le champ caché pour la méthode DELETE (optionnel selon ta route) #}
+					<input
+					type="hidden" name="_method" value="DELETE">
+
+					{# LE JETON DE SÉCURITÉ #}
+					<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ app.user.id) }}">
+
+					<button class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition">
+						Supprimer mon compte
+					</button>
+				</form>
+			</div>
+		</div>
+	{% endblock %}

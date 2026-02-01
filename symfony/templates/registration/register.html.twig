@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription
+{% endblock %}
+
+{% block body %}
+	<h1 class="text-2xl text-tertiary font-bold m-4 text-center">
+		Créer un compte
+	</h1>
+
+	<div class="flex justify-center items-center">
+		<div class="w-full max-w-md bg-white p-6 rounded-lg shadow">
+
+			{{ form_start(registrationForm) }}
+
+			{# Email #}
+			<div class="mb-4">
+				{{ form_label(registrationForm.email, 'Votre Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+				{{ form_widget(registrationForm.email) }}
+				<div class="text-red-600 text-xs mt-1 italic">
+					{{ form_errors(registrationForm.email) }}
+				</div>
+			</div>
+
+			{# Mot de passe #}
+			<div class="mb-4">
+				{{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+				{{ form_widget(registrationForm.plainPassword) }}
+				<div class="text-red-600 text-xs mt-1 italic">
+					{{ form_errors(registrationForm.plainPassword) }}
+				</div>
+			</div>
+
+			{# Le reste du formulaire (CGU, etc.) #}
+			<div class="mb-6">
+				{{ form_rest(registrationForm) }}
+			</div>
+
+			{# Le bouton Submit est déjà dans ton RegistrationFormType normalement #}
+			{{ form_end(registrationForm) }}
+
+		</div>
+	</div>
+{% endblock %}

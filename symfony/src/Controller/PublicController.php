@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\ProductRepository;
+use Symfony\Component\HttpFoundation\Request;
+use App\Repository\CategoryRepository;
 
 final class PublicController extends AbstractController
 {
@@ -14,7 +16,7 @@ final class PublicController extends AbstractController
 
 
     #[Route('/', name: 'app_public')]
-    public function index(): Response
+     public function index(): Response
     {
         return $this->render('public/index.html.twig');
     }
@@ -24,16 +26,25 @@ final class PublicController extends AbstractController
 
 
     #[Route('/products', name: 'app_public_products', methods: ['GET'])]
-    public function products(ProductRepository $productRepository): Response
-    {
+    public function products(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
+     {
+    $categoryId = $request->query->get('category');
+
+    if ($categoryId) {
+        $products = $productRepository->findByCategory($categoryId);
+    } else {
         $products = $productRepository->findAll();
-        $categories = $productRepository->findAllCategories();
-        
-        return $this->render('public/products.html.twig', [
-            'products' => $products,
-            'categories' => $categories,
-        ]);
     }
+
+    $categories = $categoryRepository->findAll();
+
+    return $this->render('public/products.html.twig', [
+        'products' => $products,
+        'categories' => $categories,
+        'currentCategory' => $categoryId,
+    ]);
+    }
+
 
 
 

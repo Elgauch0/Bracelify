@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bonjour
+	{{ app.user.firstName }}!
+{% endblock %}
+
+
+{% block body %}
+
+
+	<div class="max-w-4xl mx-auto py-10">
+
+		<h1 class="text-3xl font-bold mb-6">Mon Profil</h1>
+
+		<p class="mb-4">
+			<strong>Prénom :</strong>
+			{{ app.user.firstName }}
+		</p>
+		<p class="mb-4">
+			<strong>Nom :</strong>
+			{{ app.user.lastName }}
+		</p>
+		<p class="mb-4">
+			<strong>Email :</strong>
+			{{ app.user.email }}
+		</p>
+		<p class="mb-4">
+			<strong>Adresse  :</strong>
+			{{ app.user.adress }}
+		</p>
+		<a href="{{ path('app_profil_edit') }}" class="inline-block mt-6 bg-tertiary text-white py-2 px-4 rounded-md hover:bg-primary">
+			Modifier mon profil
+		</a>
+	</div>
+{% endblock %}

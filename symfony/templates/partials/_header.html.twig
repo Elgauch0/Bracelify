@@ -14,10 +14,16 @@
 			<a href="#" class="text-text-darker hover:text-text transition">Contact</a>
 		</nav>
 
-		<!-- Bouton -->
-		<a href="#" class="hidden md:inline-block text-text-darker px-4 py-2 rounded-lg hover:text-text transition">
-			Se connecter
-		</a>
+		<!-- Bouton Connexion -->
+		{% if app.user %}
+			<a href="{{ logout_path() }}" class="hidden md:inline-block text-text-darker px-4 py-2 rounded-lg hover:text-text transition">
+				Se déconnecter
+			</a>
+		{% else %}
+			<a href="{{ path('app_login') }}" class="hidden md:inline-block text-text-darker px-4 py-2 rounded-lg hover:text-text transition">
+				Se connecter
+			</a>
+		{% endif %}
 
 		<!-- Menu mobile -->
 		<button data-mobilebtn-target="burger" data-action="mobilebtn#toggle" class=" md:hidden text-tertiary text-2xl">
@@ -32,5 +38,14 @@
 		<a href="{{ path('app_public_products') }}" class="block">Produits</a>
 		<a href="#" class="block">À propos</a>
 		<a href="#" class="block">Contact</a>
+		{% if app.user %}
+			<a href="{{ logout_path() }}" class="block text-red-500 hover:text-red-700">
+				Se déconnecter
+			</a>
+		{% else %}
+			<a href="{{ path('app_login') }}" class="block ">
+				Se connecter
+			</a>
+		{% endif %}
 	</nav>
 </header>

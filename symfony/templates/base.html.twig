@@ -15,13 +15,21 @@
 		{% endblock %}
 	</head>
 
-	<body>
+	<body
+		class="min-h-screen flex flex-col">
 
 		{# Header #}
 		{% include "partials/_header.html.twig" %}
 
 		{# Contenu #}
-		{% block body %}{% endblock %}
+		<main
+			class="flex-1">
+			{# Flash messages #}
+			{% include "partials/_flashes_messages.html.twig" %}
+
+			{# Body content #}
+			{% block body %}{% endblock %}
+		</main>
 
 		{# Footer #}
 		{% include "partials/_footer.html.twig" %}
@@ -33,4 +41,5 @@
 			{% endblock %}
 		{% endblock %}
 	</body>
+
 </html>
