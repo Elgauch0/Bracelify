@@ -1,21 +1,31 @@
 {
-    "name":"bracelify",
-    "dockerComposeFile":"../compose.dev.yml",
+    "name": "bracelify",
+    "dockerComposeFile": "../compose.dev.yml",
     "postStartCommand": "php bin/console tailwind:build --watch",
     "workspaceFolder": "/app",
-    "service":"php",
+    "shutdownAction": "stopCompose",
+    "service": "php",
     "customizations": {
         "vscode": {
-        "extensions": [ 
-            "github.copilot-chat",
-            "bmewburn.vscode-intelephense-client",
-            "mblode.twig-language-2",
-            "whatwedo.twig",
-            "bradlc.vscode-tailwindcss",
-            "symfony.symfony-vscode",
-            "MehediDracula.php-namespace-resolver",
-             "junstyle.php-cs-fixer" ]
-
+            "extensions": [ 
+                "github.copilot-chat",
+                "bmewburn.vscode-intelephense-client",
+                "mblode.twig-language-2",
+                "bradlc.vscode-tailwindcss",
+                "symfony.symfony-vscode",
+                "MehediDracula.php-namespace-resolver",
+                "junstyle.php-cs-fixer" 
+            ],
+            "settings": {
+                // Force l'utilisation d'Intelephense pour les suggestions PHP
+                "php.suggest.basic": false,
+                "intelephense.completion.fullyQualifyImport": true,
+                "intelephense.memory": 1024,
+                // Chemin vers ton binaire PHP CS Fixer dans le container
+                "php-cs-fixer.executablePath": "/app/vendor/bin/php-cs-fixer",
+                "php-cs-fixer.onsave": true,
+                "editor.formatOnSave": true
+            }
         }
     }
 }

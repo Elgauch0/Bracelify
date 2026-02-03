@@ -1,20 +1,61 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CartController!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+	<div
+		class="container mx-auto px-4 py-8 ">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+		{# 1. On vérifie si le panier n'est pas vide via l'objet cart #}
+		{% if cart.items is not empty %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/app/src/Controller/CartController.php</code></li>
-        <li>Your template at <code>/app/templates/cart/index.html.twig</code></li>
-    </ul>
-</div>
+			<div class="flex flex-col gap-20 justify-center items-center">
+				<div class="w-full lg:w-2/3">
+					<table class="w-full text-left">
+						<thead>
+							<tr class="border-b">
+								<th class="px-6 py-4">Produit</th>
+								<th class="px-6 py-4">Quantité</th>
+								<th class="px-6 py-4">Prix total</th>
+								<th class="px-6 py-4">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{# 2. On boucle sur cart.items #}
+							{% for item in cart.items %}
+								<tr class="border-b">
+									<td class="px-6 py-4 font-bold">{{ item.product.name }}</td>
+									<td class="px-6 py-4">{{ item.quantity }}</td>
+									<td class="px-6 py-4">{{ item.total /100 }}
+										€</td>
+									<td class="px-6 py-4">
+										<form action="{{ path('app_cart_remove', {id: item.product.id}) }}" method="POST">
+											<input type="hidden" name="_token" value="{{ csrf_token('remove' ~ item.product.id) }}">
+											<button type="submit" class="text-red-500">Supprimer</button>
+										</form>
+										<form action="{{ path('app_cart_add', {id: item.product.id, quantity: 1}) }}" method="POST" class="mt-2">
+											<input type="hidden" name="_token" value="{{ csrf_token('add' ~ item.product.id) }}">
+											<input type="hidden" name="isUpdate" value="true">
+											<button type="submit" class="text-green-500">Ajouter 1</button>
+										</form>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+				{# 3. On affiche le total via cart.total #}
+				<div class="w-full lg:w-1/3">
+					<div class="bg-gray-50 p-6 rounded-xl">
+						<h2 class="text-xl font-bold">Total :
+							{{ cart.total /100 }}
+							€</h2>
+					</div>
+				</div>
+			</div>
+
+		{% else %}
+			<p>Votre panier est vide.</p>
+		{% endif %}
+
+	</div>
 {% endblock %}

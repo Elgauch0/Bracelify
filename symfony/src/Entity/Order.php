@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
 class Order
@@ -25,12 +26,12 @@ class Order
     /**
      * @var Collection<int, OrderItem>
      */
-    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'bail')]
-    private Collection $Items;
+    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order')]
+    private Collection $items;
 
     public function __construct()
     {
-        $this->Items = new ArrayCollection();
+        $this->items = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -67,14 +68,15 @@ class Order
      */
     public function getItems(): Collection
     {
-        return $this->Items;
+        return $this->items;
     }
 
     public function addItem(OrderItem $item): static
     {
-        if (!$this->Items->contains($item)) {
-            $this->Items->add($item);
-            $item->setBail($this);
+        if (!$this->items->contains($item)) {
+            $this->items->add($item);
+            $item->setOrder($this);
+            $this->recalculateTotal();
         }
 
         return $this;
@@ -82,13 +84,32 @@ class Order
 
     public function removeItem(OrderItem $item): static
     {
-        if ($this->Items->removeElement($item)) {
+        if ($this->items->removeElement($item)) {
             // set the owning side to null (unless already changed)
-            if ($item->getBail() === $this) {
-                $item->setBail(null);
+            if ($item->getOrder() === $this) {
+                $item->setOrder(null);
+                $this->recalculateTotal();
             }
         }
 
         return $this;
+    }
+
+
+    public function recalculateTotal(): void
+    {
+    $newTotal = 0;
+    foreach ($this->items as $item) {
+        $newTotal += $item->getTotalPrice();
+    }
+    $this->total = $newTotal;
+    }
+
+    #[ORM\PrePersist] 
+    public function setCreatedAtValue(): void
+    {
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
     }
 }

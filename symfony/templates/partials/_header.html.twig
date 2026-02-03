@@ -12,6 +12,7 @@
 			<a href="{{ path('app_public_products') }}" class="text-text-darker hover:text-text transition">Produits</a>
 			<a href="#" class="text-text-darker hover:text-text transition">À propos</a>
 			<a href="#" class="text-text-darker hover:text-text transition">Contact</a>
+			<a href="{{ path('app_cart_index') }}" class="text-text-darker hover:text-text transition">Panier</a>
 		</nav>
 
 		<!-- Bouton Connexion -->
@@ -38,6 +39,7 @@
 		<a href="{{ path('app_public_products') }}" class="block">Produits</a>
 		<a href="#" class="block">À propos</a>
 		<a href="#" class="block">Contact</a>
+		<a href="{{ path('app_cart_index') }}" class="block">Panier</a>
 		{% if app.user %}
 			<a href="{{ logout_path() }}" class="block text-red-500 hover:text-red-700">
 				Se déconnecter

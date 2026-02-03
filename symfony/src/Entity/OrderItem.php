@@ -20,8 +20,7 @@ class OrderItem
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $quantity = null;
 
-    #[ORM\Column]
-    private ?int $total = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
@@ -29,7 +28,7 @@ class OrderItem
 
     #[ORM\ManyToOne(inversedBy: 'Items')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Order $bail = null;
+    private ?Order $order = null;
 
     public function getId(): ?int
     {
@@ -60,16 +59,9 @@ class OrderItem
         return $this;
     }
 
-    public function getTotal(): ?int
+    public function getTotalPrice(): int
     {
-        return $this->total;
-    }
-
-    public function setTotal(int $total): static
-    {
-        $this->total = $total;
-
-        return $this;
+        return $this->price * $this->quantity;
     }
 
     public function getProduct(): ?Product
@@ -84,15 +76,16 @@ class OrderItem
         return $this;
     }
 
-    public function getBail(): ?Order
+    public function getOrder(): ?Order
     {
-        return $this->bail;
+        return $this->order;
     }
 
-    public function setBail(?Order $bail): static
+    public function setOrder(?Order $order): static
     {
-        $this->bail = $bail;
+        $this->order = $order;
 
         return $this;
     }
+    
 }
