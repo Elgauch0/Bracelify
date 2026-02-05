@@ -31,11 +31,7 @@
 											<input type="hidden" name="_token" value="{{ csrf_token('remove' ~ item.product.id) }}">
 											<button type="submit" class="text-red-500">Supprimer</button>
 										</form>
-										<form action="{{ path('app_cart_add', {id: item.product.id, quantity: 1}) }}" method="POST" class="mt-2">
-											<input type="hidden" name="_token" value="{{ csrf_token('add' ~ item.product.id) }}">
-											<input type="hidden" name="isUpdate" value="true">
-											<button type="submit" class="text-green-500">Ajouter 1</button>
-										</form>
+
 									</td>
 								</tr>
 							{% endfor %}

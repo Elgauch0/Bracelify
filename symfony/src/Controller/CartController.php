@@ -28,25 +28,19 @@ final class CartController extends AbstractController
         ]);
     }
 
-    #[Route('/add/{id}/{quantity}', name: 'app_cart_add', methods: ['POST'], requirements: ['id' => Requirement::POSITIVE_INT, 'quantity' => Requirement::POSITIVE_INT])]
-    public function addToCart(Product $product, int $quantity, Request $request): Response
+    #[Route('/add/{id}', name: 'app_cart_add', methods: ['POST'], requirements: ['id' => Requirement::POSITIVE_INT, 'quantity' => Requirement::POSITIVE_INT])]
+    public function addToCart(Product $product, Request $request): Response
     {
         // Vérification du token CSRF
         $token = $request->request->get('_token');
-        $isUpdate = $request->request->get('isUpdate', false);
 
         if (!$this->isCsrfTokenValid('add'.$product->getId(), $token)) {
             $this->addFlash('danger', 'Votre session a expiré ou la requête est invalide. Veuillez réessayer.');
 
             return $this->redirectToRoute('app_cart_index');
         }
-
-        $this->cartService->addToCart($product, $quantity);
-        if ($isUpdate) {
-            $this->addFlash('success', 'Quantité mise à jour !');
-        } else {
-            $this->addFlash('success', 'Produit ajouté au panier !');
-        }
+        $this->cartService->addToCart($product, 1);
+        $this->addFlash('success', 'Produit ajouté au panier !');
 
         $referer = $request->headers->get('referer');
 

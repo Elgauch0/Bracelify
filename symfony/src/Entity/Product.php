@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -47,6 +48,9 @@ class Product
      */
     #[ORM\OneToMany(targetEntity: ProductImage::class, mappedBy: 'product',cascade: ['persist','remove'], orphanRemoval: true)]
     private Collection $productImages;
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $Quantity = null;
 
     public function __construct()
     {
@@ -175,6 +179,18 @@ class Product
                 $productImage->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->Quantity;
+    }
+
+    public function setQuantity(int $Quantity): static
+    {
+        $this->Quantity = $Quantity;
 
         return $this;
     }

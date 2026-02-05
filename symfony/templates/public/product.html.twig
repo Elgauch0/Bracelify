@@ -73,7 +73,7 @@
 
 				{# CTA #}
 				<div class="mt-8">
-					<form action="{{ path('app_cart_add', {id: product.id, quantity: 1}) }}" method="post" class="w-full bg-black text-white py-3 rounded-lg text-lg hover:bg-gray-800 transition">
+					<form action="{{ path('app_cart_add', {id: product.id}) }}" method="post" class="w-full bg-black text-white py-3 rounded-lg text-lg hover:bg-gray-800 transition">
 						<input type="hidden" name="_token" value="{{ csrf_token('add' ~ product.id) }}">
 						<button type="submit" class="w-full h-full">
 							Ajouter au panier
