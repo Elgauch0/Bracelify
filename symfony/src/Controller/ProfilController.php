@@ -24,6 +24,7 @@ final class ProfilController extends AbstractController
     #[Route('/profil/edit', name: 'app_profil_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher): Response
     {
+        /* @var User $user */
         $user = $this->getUser();
         $form = $this->createForm(UserType::class, $user);
 

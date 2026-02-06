@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 
 final class PublicController extends AbstractController
 {
@@ -49,14 +50,18 @@ final class PublicController extends AbstractController
 
 
     #[Route('/products/{id}', name: 'app_public_show', methods: ['GET'])]
-    public function show(int $id, ProductRepository $productRepository): Response
+    public function show(int $id, ProductRepository $productRepository, CommentRepository $commentRepository): Response
     {
         $product = $productRepository->find($id);
         if (!$product) {
             throw $this->createNotFoundException('Product not found');
         }
+
+        $comments = $commentRepository->getcommentsbyarticle($product);
+
         return $this->render('public/product.html.twig', [
             'product' => $product,
+            'comments' => $comments,
         ]);
     }
 
