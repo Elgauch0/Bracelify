@@ -26,8 +26,14 @@ class Order
     /**
      * @var Collection<int, OrderItem>
      */
-    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order')]
+    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $items;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $sessionStripe = null;
+
+    #[ORM\Column(length: 20)]
+    private ?string $Status = 'PENDING';
 
     public function __construct()
     {
@@ -111,5 +117,29 @@ class Order
         if ($this->createdAt === null) {
             $this->createdAt = new \DateTimeImmutable();
         }
+    }
+
+    public function getSessionStripe(): ?string
+    {
+        return $this->sessionStripe;
+    }
+
+    public function setSessionStripe(string $sessionStripe): static
+    {
+        $this->sessionStripe = $sessionStripe;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->Status;
+    }
+
+    public function setStatus(string $Status): static
+    {
+        $this->Status = $Status;
+
+        return $this;
     }
 }

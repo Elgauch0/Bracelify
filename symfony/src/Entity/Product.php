@@ -8,7 +8,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Product
 {
     #[ORM\Id]
@@ -230,5 +232,12 @@ class Product
         }
 
         return $this;
+    }
+    #[ORM\PrePersist]
+    public function setInitialQuantity(): void
+    {
+        if ($this->Quantity === null) {
+            $this->Quantity = 0; // Ou une autre valeur par défaut
+        }
     }
 }

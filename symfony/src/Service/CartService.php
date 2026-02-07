@@ -50,7 +50,7 @@ class CartService
 
     public function getFullCart(): array
     {
-        $cart = $this->requestStack->getSession()->get('cart', []);
+        $cart = $this->getCart();
 
         if (empty($cart)) {
             return ['items' => [], 'total' => 0];
@@ -77,4 +77,20 @@ class CartService
             'total' => $total,
         ];
     }
+
+
+    
+    public function addToCartOnlyIfnotadded(Product $product, int $quantity): bool
+    {
+        $session = $this->requestStack->getSession();
+        $cart = $session->get('cart', []);
+        if (!isset($cart[$product->getId()])) {
+            $cart[$product->getId()] = $quantity;
+            $session->set('cart', $cart);
+            return true;
+        }
+        return false;
+        
+    }
+
 }

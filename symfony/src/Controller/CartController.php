@@ -39,10 +39,17 @@ final class CartController extends AbstractController
 
             return $this->redirectToRoute('app_cart_index');
         }
-        $this->cartService->addToCart($product, 1);
+        $referer = $request->headers->get('referer');
+
+        $isAdded = $this->cartService->addToCartOnlyIfnotadded($product, 1);
+        if (!$isAdded) {
+            $this->addFlash('warning', 'Ce produit est déjà dans votre panier.');
+
+             return $this->redirect($referer ?: $this->generateUrl('app_cart_index'));
+        }
+
         $this->addFlash('success', 'Produit ajouté au panier !');
 
-        $referer = $request->headers->get('referer');
 
         return $this->redirect($referer ?: $this->generateUrl('app_cart_index'));
     }
