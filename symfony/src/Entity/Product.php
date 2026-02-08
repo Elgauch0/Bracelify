@@ -52,7 +52,7 @@ class Product
     private Collection $productImages;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $Quantity = null;
+    private ?int $Quantity = 1;
 
     /**
      * @var Collection<int, Comment>
@@ -233,6 +233,22 @@ class Product
 
         return $this;
     }
+
+
+
+    public function getFinalPrice(): ?int
+    {
+        if ($this->price === null) {
+            return null;
+        }
+
+        
+        return max(0, $this->price - $this->discount);
+    }
+
+
+
+
     #[ORM\PrePersist]
     public function setInitialQuantity(): void
     {

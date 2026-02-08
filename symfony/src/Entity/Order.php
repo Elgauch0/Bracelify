@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Enum\OrderStatus; 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -32,8 +33,8 @@ class Order
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $sessionStripe = null;
 
-    #[ORM\Column(length: 20)]
-    private ?string $Status = 'PENDING';
+    #[ORM\Column(length: 20, enumType: OrderStatus::class)]
+    private ?OrderStatus $Status = OrderStatus::PENDING;
 
     public function __construct()
     {
@@ -131,12 +132,12 @@ class Order
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?OrderStatus
     {
         return $this->Status;
     }
 
-    public function setStatus(string $Status): static
+    public function setStatus(OrderStatus $Status): static
     {
         $this->Status = $Status;
 

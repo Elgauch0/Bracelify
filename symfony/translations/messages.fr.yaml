@@ -1,0 +1,13 @@
+# translations/messages.fr.yaml
+Product: 'Produit'
+'Liste des produits :': 'Liste des produits :'
+Dashboard: 'Tableau de bord'
+Commandes: 'Commandes'
+Produits: 'Produits'
+Commentaires: 'Commentaires'
+Catégories: 'Catégories'
+'Nom du produit': 'Nom du produit'
+'Quantité en stock': 'Quantité en stock'
+prix: 'Prix'
+'réduction en euro': 'Réduction (€)'
+Category: 'Catégorie'
