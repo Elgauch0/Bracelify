@@ -10,6 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 
 class OrderCrudController extends AbstractCrudController
@@ -18,6 +21,16 @@ class OrderCrudController extends AbstractCrudController
     {
         return Order::class;
     }
+
+    public function configureActions(Actions $actions): Actions
+{
+    return $actions
+        // Désactive le bouton "New" (Créer) en haut de la page
+        ->disable(Action::NEW)
+        // Ajoute le bouton "Consulter" pour voir les détails sans modifier
+        ->add(Crud::PAGE_INDEX, Action::DETAIL);
+}
+  
 
     public function configureFields(string $pageName): iterable
 {
@@ -34,8 +47,7 @@ class OrderCrudController extends AbstractCrudController
             ->setFormTypeOptions(['disabled' => true]), // Optionnel si tu veux formater en monnaie
 
         TextField::new('sessionStripe', 'ID Session Stripe')
-            ->setFormTypeOptions(['disabled' => true])
-            ->onlyOnDetail(), // On ne le montre que dans la page de détails
+            ->setFormTypeOptions(['disabled' => true]),
 
         // LE SEUL CHAMP MODIFIABLE
         ChoiceField::new('Status', 'Statut de la commande')
@@ -53,10 +65,9 @@ class OrderCrudController extends AbstractCrudController
         'REFUNDED'  => 'secondary', // Gris
         'SHIPPED'   => 'info',      // Bleu
     ]),
-
-        // Pour voir les articles sans pouvoir les toucher
+   
         CollectionField::new('items', 'Articles')
-            ->onlyOnDetail() 
+            ->onlyOnDetail(), 
     ];
 }
 }

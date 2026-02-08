@@ -87,5 +87,12 @@ class OrderItem
 
         return $this;
     }
+    // src/Entity/OrderItem.php
+
+public function __toString(): string
+{
+    // On n'affiche QUE le produit et la quantité, surtout pas l'objet Order !
+    return $this->product->getName() . ' (x' . $this->quantity . ')';
+}
     
 }

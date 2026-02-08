@@ -15,7 +15,7 @@ class OrderItemService
         $orderItem = new OrderItem();
         $orderItem->setOrder($order);
         $orderItem->setProduct($product);
-        $orderItem->setPrice($product->getPrice());
+        $orderItem->setPrice($product->getFinalPrice());
         $orderItem->setQuantity($quantity);
         
 

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Enum\OrderStatus;
 use \Stripe\StripeClient;
 use App\Service\CartService;
 use App\Service\PaimentService;
@@ -55,7 +56,7 @@ final class PaymentController extends AbstractController
                 'product_data' => [
                     'name' => $item['product']->getName(),
                 ],
-                'unit_amount' => $item['product']->getPrice(), // Déjà en centimes 
+                'unit_amount' => $item['product']->getFinalPrice(), // Déjà en centimes 
             ],
             'quantity' => $item['quantity'],
         ];
@@ -97,8 +98,8 @@ final class PaymentController extends AbstractController
     $order = $orderRepo->findOneBy(['sessionStripe' => $sessionId]);
 
     
-    if ($order && $order->getStatus() === 'PENDING') {
-        $order->setStatus('PAID');
+    if ($order && $order->getStatus() === OrderStatus::PENDING) {
+        $order->setStatus(OrderStatus::PAID);
         $em->flush();
         $cartService->clearCart();
     }
