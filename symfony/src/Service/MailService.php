@@ -35,7 +35,7 @@ class MailService
 
     }
 
-    public function sendEmailToAdmin(string $from,  string $subject, string $message): void
+    public function sendEmailToAdmin(string $from ,  string $subject, string $message): void
     {
         $email = (new Email())
             ->from($this->adminEmail)
@@ -46,4 +46,26 @@ class MailService
 
         $this->mailer->send($email);
     }
+
+
+
+    // src/Service/MailService.php
+
+public function sendStockAlert(array $errors): void
+{
+    $html = "<h1>⚠️ ALERTE : Survente détectée</h1>";
+    $html .= "<p>Les articles suivants ont été payés mais n'étaient plus disponibles en stock :</p><ul>";
+    
+    foreach ($errors as $error) {
+        $html .= sprintf(
+            "<li><strong>%s</strong> : %d unité(s) manquante(s)</li>",
+            $error['name'],
+            $error['missing']
+        );
+    }
+    
+    $html .= "</ul><p>Veuillez contacter les clients pour un remboursement ou un délai supplémentaire.</p>";
+
+    $this->sendEmailToAdmin($this->adminEmail, "CRITICAL: Problème de stock après paiement", $html);
+}
 }

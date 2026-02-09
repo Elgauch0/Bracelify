@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,6 +16,30 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
+
+
+
+
+    public function findAvailableProducts(): array
+    {
+        return $this->createQueryBuilder('p')
+           ->andWhere('p.Quantity > 0')
+           ->getQuery()
+           ->getResult();
+
+    }
+    public function findAvailableProductsForCategory(int $categoryId):array
+    {
+        return $this->createQueryBuilder('p')
+          ->andWhere('p.Quantity > 0')
+          ->andWhere('p.category = :categoryId')
+          ->setParameter('categoryId', $categoryId)
+          ->getQuery()
+          ->getResult();
+    }
+
+
+
 
     //    /**
     //     * @return Product[] Returns an array of Product objects

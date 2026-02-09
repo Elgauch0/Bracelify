@@ -246,7 +246,19 @@ class Product
         return max(0, $this->price - $this->discount);
     }
 
+   public function consume(int $number): int
+    {
+    if ($this->Quantity < $number) {
+        // On calcule combien il en manque avant de remettre le stock à 0
+        $missing = $number - $this->Quantity;
+        $this->Quantity = 0;
+        
+        return $missing; // On retourne le déficit pour l'admin
+    }
 
+    $this->Quantity -= $number;
+    return 0; // Tout est OK
+    }
 
 
     #[ORM\PrePersist]

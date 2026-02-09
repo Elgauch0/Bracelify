@@ -8,6 +8,7 @@ use \Stripe\StripeClient;
 use App\Service\CartService;
 use App\Service\PaimentService;
 use App\Repository\OrderRepository;
+use App\Service\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,27 +88,44 @@ final class PaymentController extends AbstractController
 
 
     #[Route('/success', name: 'app_payment_success')]
-   public function success(Request $request,OrderRepository $orderRepo,EntityManagerInterface $em,CartService $cartService): Response {
-    $sessionId = $request->query->get('session_id');
+    public function success( Request $request,OrderRepository $orderRepo,EntityManagerInterface $em,CartService $cartService,MailService $mailService ): Response 
+    {
 
-    if (!$sessionId) {
-        return $this->redirectToRoute('app_public');
-    }
+        $sessionId = $request->query->get('session_id');
+        if (!$sessionId) return $this->redirectToRoute('app_public');
+        $sessionId = $request->query->get('session_id');
+        $order = $orderRepo->findOneBy(['sessionStripe' => $sessionId]);
 
-    
-    $order = $orderRepo->findOneBy(['sessionStripe' => $sessionId]);
-
-    
-    if ($order && $order->getStatus() === OrderStatus::PENDING) {
+        if ($order && $order->getStatus() === OrderStatus::PENDING) {
         $order->setStatus(OrderStatus::PAID);
+        
+        $stockErrors = [];
+
+        foreach ($order->getItems() as $itemOrder) {
+            $product = $itemOrder->getProduct();
+            // Utilisation de ta fonction consume() qui retourne l'int de différence
+            $missing = $product->consume($itemOrder->getQuantity());
+
+            if ($missing > 0) {
+                $stockErrors[] = [
+                    'name' => $product->getName(),
+                    'missing' => $missing
+                ];
+            }
+        }
+
         $em->flush();
+
+        // Envoi de l'alerte si survente
+        if (!empty($stockErrors)) {
+            $mailService->sendStockAlert($stockErrors);
+        }
+
         $cartService->clearCart();
     }
 
-    return $this->render('payment/success.html.twig', [
-        'order' => $order
-    ]);
-}
+    return $this->render('payment/success.html.twig', ['order' => $order]);
+    }
 
 
 

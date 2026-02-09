@@ -32,9 +32,9 @@ final class PublicController extends AbstractController
     $categoryId = $request->query->get('category');
 
     if ($categoryId) {
-        $products = $productRepository->findByCategory($categoryId);
+        $products = $productRepository->findAvailableProductsForCategory($categoryId);
     } else {
-        $products = $productRepository->findAll();
+        $products = $productRepository->findAvailableProducts();
     }
 
     $categories = $categoryRepository->findAll();
