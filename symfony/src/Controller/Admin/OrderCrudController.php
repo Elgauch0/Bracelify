@@ -51,23 +51,31 @@ class OrderCrudController extends AbstractCrudController
 
         // LE SEUL CHAMP MODIFIABLE
         ChoiceField::new('Status', 'Statut de la commande')
-    ->setChoices([
-        'En attente' => OrderStatus::PENDING,
-        'Payée' => OrderStatus::PAID,
-        'Annulée' => OrderStatus::CANCELLED,
-        'Remboursée' => OrderStatus::REFUNDED,
-        'Expédiée' => OrderStatus::SHIPPED,
+                ->setChoices([
+                    'En attente' => OrderStatus::PENDING,
+                    'Payée' => OrderStatus::PAID,
+                    'Annulée' => OrderStatus::CANCELLED,
+                    'Remboursée' => OrderStatus::REFUNDED,
+                    'Expédiée' => OrderStatus::SHIPPED,
     ])
-    ->renderAsBadges([
-        'PENDING'   => 'warning',   // Orange
-        'PAID'      => 'success',   // Vert
-        'CANCELLED' => 'danger',    // Rouge
-        'REFUNDED'  => 'secondary', // Gris
-        'SHIPPED'   => 'info',      // Bleu
-    ]),
+                ->renderAsBadges([
+                    'PENDING'   => 'warning',   // Orange
+                    'PAID'      => 'success',   // Vert
+                    'CANCELLED' => 'danger',    // Rouge
+                    'REFUNDED'  => 'secondary', // Gris
+                    'SHIPPED'   => 'info',      // Bleu
+     ]),
    
         CollectionField::new('items', 'Articles')
-            ->onlyOnDetail(), 
+            ->onlyOnDetail(),
+
+        // Affiche l'email du client (lecture seule)
+        TextField::new('client.email', 'Email du Client')
+            ->onlyOnDetail(),
+
+// Affiche l'adresse du client
+        TextField::new('client.Adress', 'Adresse de livraison')
+            ->onlyOnDetail(),
     ];
 }
 }

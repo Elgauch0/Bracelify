@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
@@ -22,6 +23,9 @@ class CreateAdminCommand extends Command
         private UserRepository $userRepository,
         private UserPasswordHasherInterface $passwordHasher,
         private EntityManagerInterface $entityManager,
+
+        #[Autowire('%app.admin_email%')]
+        private string $admin_email
     ) {
         parent::__construct();
     }
@@ -34,8 +38,8 @@ class CreateAdminCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $adminEmail = 'admin@bracelify.com';
-        $admin = $this->userRepository->findOneByEmail($adminEmail);
+        
+        $admin = $this->userRepository->findOneByEmail($this->admin_email);
 
         if ($admin) {
             $io->warning('Admin user already exists.');
@@ -52,7 +56,7 @@ class CreateAdminCommand extends Command
         }
 
         $admin = $admin ?? new User();
-        $admin->setEmail($adminEmail);
+        $admin->setEmail($this->admin_email);
         $admin->setFirstname('Admin');
         $admin->setLastname('User');
         $admin->setAdress('123 Admin St, Admin City');
