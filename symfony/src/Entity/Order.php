@@ -39,6 +39,10 @@ class Order
     #[ORM\Column(length: 20, enumType: OrderStatus::class)]
     private ?OrderStatus $Status = OrderStatus::PENDING;
 
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $client = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -143,6 +147,18 @@ class Order
     public function setStatus(OrderStatus $Status): static
     {
         $this->Status = $Status;
+
+        return $this;
+    }
+
+    public function getClient(): ?User
+    {
+        return $this->client;
+    }
+
+    public function setClient(?User $client): static
+    {
+        $this->client = $client;
 
         return $this;
     }

@@ -38,9 +38,17 @@ final class PaymentController extends AbstractController
     {
 
 
+
+        $user = $this->getUser();
+
+        // Sécurité : Vérifier qu'un utilisateur est bien connecté
+        if (!$user) {
+            return $this->redirectToRoute('app_login'); // Ou affiche une erreur
+        }
         
         #preparin Strip checkout session   
         $order = new Order();
+        $order->setClient($user);
         $itemOrders = $paimentService->createItemOrders($order);
         $paimentService->addItemOrdersToOrder($order, $itemOrders);
         $order->recalculateTotal();
