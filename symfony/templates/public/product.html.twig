@@ -1,117 +1,171 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}
 	{{ product.name }}
 	- Ma Boutique
 {% endblock %}
 
 {% block body %}
+<div
+	class="max-w-6xl mx-auto py-10 px-4">
 
-	<div class="max-w-6xl mx-auto py-10">
+	{# --- Fil d'ariane / Retour --- #}
+	<a href="{{ path('app_public_products') }}" class="text-gray-600 hover:text-black transition mb-6 inline-block font-medium">
+		&larr; Retour aux produits
+	</a>
 
-		<a href="{{ path('app_public_products') }}" class="text-gray-600 hover:text-black transition mb-6 inline-block">
-			← Retour aux produits
-		</a>
+	{# --- Section Produit --- #}
+	<div
+		class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
 
-		<div
-			data-controller="gallery" class="grid grid-cols-1 md:grid-cols-2 gap-10">
+		{# --- Galerie d’images (Stimulus Controller) --- #}
+		<div data-controller="gallery">
+			{% set firstImage = product.productImages|first %}
 
-			{# --- Galerie d’images --- #}
-			<div>
-				{% set firstImage = product.productImages|first %}
-
-				{# Image principale #}
+			{# Image principale #}
+			<div class="overflow-hidden rounded-xl shadow-lg bg-gray-100 aspect-square">
 				{% if firstImage %}
-					<img src="/images/products/{{ firstImage.imageName }}" alt="{{ product.name }}" class="w-full h-96 object-cover rounded-xl shadow" data-gallery-target="mainImage">
+					<img src="/images/products/{{ firstImage.imageName }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" data-gallery-target="mainImage">
 				{% else %}
-					<div class="w-full h-96 bg-gray-200 rounded-xl flex items-center justify-center text-gray-500">
-						Aucune image
-					</div>
-				{% endif %}
-
-				{# Miniatures #}
-				{% if product.productImages|length > 1 %}
-					<div class="grid grid-cols-4 gap-3 mt-4">
-						{% for image in product.productImages %}
-							<img src="/images/products/{{ image.imageName }}" data-action="click->gallery#change" alt="{{ product.name }}" class="h-24 w-full object-cover rounded-lg border hover:border-black cursor-pointer transition">
-						{% endfor %}
+					<div class="w-full h-full flex items-center justify-center text-gray-400">
+						<span class="text-sm italic">Aucune image disponible</span>
 					</div>
 				{% endif %}
 			</div>
 
-			{# --- Infos produit --- #}
-			<div class="flex flex-col justify-between">
+			{# Miniatures #}
+			{% if product.productImages|length > 1 %}
+				<div class="grid grid-cols-4 gap-4 mt-6">
+					{% for image in product.productImages %}
+						<img src="/images/products/{{ image.imageName }}" data-action="click->gallery#change" alt="Miniature {{ loop.index }}" class="h-20 w-full object-cover rounded-lg border-2 border-transparent hover:border-black cursor-pointer transition-all shadow-sm">
+					{% endfor %}
+				</div>
+			{% endif %}
+		</div>
 
-				<div>
-					<h1 class="text-3xl font-bold text-gray-900 mb-4">
-						{{ product.name }}
-					</h1>
+		{# --- Infos produit --- #}
+		<div class="flex flex-col">
+			<div class="flex-grow">
+				<h1 class="text-4xl font-extrabold text-gray-900 mb-2 uppercase tracking-tight">
+					{{ product.name }}
+				</h1>
 
-					{# Prix #}
+				<div class="h-1 w-20 bg-black mb-6"></div>
+
+				{# Prix #}
+				<div class="flex items-center mb-6">
 					{% if product.discount > 0 %}
-						<div class="mb-4">
-							<span class="text-2xl font-bold text-red-600">
-								{{ (product.price - product.discount) / 100 }}
-								€
-							</span>
-							<span class="line-through text-gray-500 ml-3">
-								{{ product.price / 100 }}
-								€
-							</span>
-						</div>
-					{% else %}
-						<p class="text-2xl font-semibold text-gray-900 mb-4">
+						<span class="text-3xl font-bold text-red-600">
+							{{ (product.price - product.discount) / 100 }}
+							€
+						</span>
+						<span class="line-through text-gray-400 text-xl ml-4">
 							{{ product.price / 100 }}
 							€
-						</p>
+						</span>
+					{% else %}
+						<span class="text-3xl font-bold text-gray-900">
+							{{ product.price / 100 }}
+							€
+						</span>
 					{% endif %}
+				</div>
 
-					{# Description #}
-					<p class="text-gray-700 leading-relaxed">
+				{# Description #}
+				<div class="prose prose-sm text-gray-600 mb-8">
+					<p class="leading-relaxed text-lg italic">
 						{{ product.description }}
 					</p>
 				</div>
-
-				{# CTA #}
-				<div class="mt-8">
-					<form action="{{ path('app_cart_add', {id: product.id}) }}" method="post" class="w-full bg-black text-white py-3 rounded-lg text-lg hover:bg-gray-800 transition">
-						<input type="hidden" name="_token" value="{{ csrf_token('add' ~ product.id) }}">
-						<button type="submit" class="w-full h-full">
-							Ajouter au panier
-						</button>
-					</form>
-				</div>
-
 			</div>
 
+			{# CTA Panier #}
+			<div class="mt-auto pt-8 border-t border-gray-100">
+				<form action="{{ path('app_cart_add', {id: product.id}) }}" method="post">
+					<input type="hidden" name="_token" value="{{ csrf_token('add' ~ product.id) }}">
+					<button type="submit" class="w-full bg-tertiary text-white py-4 rounded-xl text-lg font-bold hover:bg-primary transform transition active:scale-95 shadow-xl">
+						AJOUTER AU PANIER
+					</button>
+				</form>
+			</div>
 		</div>
-
 	</div>
-	<hr style="margin-top: 50px;">
 
-	<div class="row mt-5">
-		<div class="col-12">
-			<h3 class="mb-4">Avis des passionnés de bracelets ({{ comments|length }})</h3>
+	<hr
+	class="border-gray-200 mb-16">
 
+	{# --- SECTION COMMENTAIRES --- #}
+	<div class="max-w-3xl mx-auto">
+
+		<h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+			<span class="mr-3">Avis clients</span>
+			<span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">{{ comments|length }}</span>
+		</h3>
+
+		{# Messages de succès (Flash) #}
+		{% for message in app.flashes('success') %}
+			<div class="bg-green-50 border-l-4 border-green-500 p-4 mb-8 text-green-700 shadow-sm rounded-r-lg">
+				<div class="flex items-center">
+					<svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 20 20">
+						<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+					</svg>
+					{{ message }}
+				</div>
+			</div>
+		{% endfor %}
+
+
+		{# Liste des commentaires #}
+		<div class="space-y-6">
 			{% for comment in comments %}
-				<div class="card mb-3 shadow-sm">
-					<div class="card-body">
-						<div class="d-flex justify-content-between">
-							<h6 class="card-title">
-								<i class="fas fa-user-circle"></i>
-								{{ comment.author.email }}
-							</h6>
-							<small class="text-muted">{{ comment.createdAt|date('d/m/Y') }}</small>
+				<div class="border-b border-gray-100 pb-6 last:border-0">
+					<div class="flex justify-between items-start mb-2">
+						<div>
+							<span class="font-bold text-gray-900">{{ comment.author.email|split('@')[0] }}</span>
+							<span class="text-gray-400 text-sm ml-2">•
+								{{ comment.createdAt|date('d/m/Y') }}</span>
 						</div>
-						<p class="card-text">{{ comment.content|nl2br }}</p>
+						{# Badge Modérateur ou autre si besoin #}
 					</div>
+					<p class="text-gray-700 leading-relaxed italic">
+						"{{ comment.content|nl2br }}"
+					</p>
 				</div>
 			{% else %}
-				<div class="alert alert-light border">
-					Aucun avis n'a encore été publié pour ce modèle.
+				<div class="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+					<p class="text-gray-500">Aucun avis n'a encore été publié pour ce modèle.</p>
 				</div>
 			{% endfor %}
 		</div>
+
+
+		{# Formulaire de commentaire (Conditionnel) #}
+		{# On ne garde que l'essentiel : si le contrôleur a envoyé le formulaire, on l'affiche #}
+		{% if form %}
+			<div class="bg-gray-50 rounded-2xl p-8 mb-12 border border-gray-100 shadow-inner">
+				<h4 class="text-xl font-bold mb-4 text-gray-900">Laissez votre avis</h4>
+
+				{{ form_start(form) }}
+				<div class="mb-4">
+					{{ form_widget(form.content, {
+                    'attr': {
+                        'class': 'w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-black focus:border-black min-h-[120px]',
+                        'placeholder': 'Qu\'avez-vous pensé de ce bracelet ?'
+                    }
+                }) }}
+                <div class="text-red-500 text-xs mt-1 italic">
+                    {{ form_errors(form.content) }}
+                </div>
+            </div>
+            
+            <button type="submit" class="bg-tertiary text-white px-8 py-3 rounded-xl font-bold hover:bg-primary transform transition active:scale-95 shadow-md">
+                PUBLIER MON AVIS
+            </button>
+        {{ form_end(form) }}
+    </div>
+{% endif %}
+
+		</div>
+
 	</div>
-
-
 {% endblock %}

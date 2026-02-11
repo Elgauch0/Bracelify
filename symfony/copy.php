@@ -86,5 +86,32 @@
 		</div>
 
 	</div>
+	<hr style="margin-top: 50px;">
+
+	<div class="row mt-5">
+		<div class="col-12">
+			<h3 class="mb-4">Avis des passionnés de bracelets ({{ comments|length }})</h3>
+
+			{% for comment in comments %}
+				<div class="card mb-3 shadow-sm">
+					<div class="card-body">
+						<div class="d-flex justify-content-between">
+							<h6 class="card-title">
+								<i class="fas fa-user-circle"></i>
+								{{ comment.author.email }}
+							</h6>
+							<small class="text-muted">{{ comment.createdAt|date('d/m/Y') }}</small>
+						</div>
+						<p class="card-text">{{ comment.content|nl2br }}</p>
+					</div>
+				</div>
+			{% else %}
+				<div class="alert alert-light border">
+					Aucun avis n'a encore été publié pour ce modèle.
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+
 
 {% endblock %}

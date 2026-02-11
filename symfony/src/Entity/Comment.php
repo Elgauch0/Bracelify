@@ -29,7 +29,7 @@ class Comment
     private ?Product $product = null;
 
     #[ORM\Column]
-    private ?bool $isValid = null;
+    private ?bool $isValid = false;
 
     public function getId(): ?int
     {

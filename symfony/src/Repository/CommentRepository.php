@@ -6,6 +6,7 @@ use App\Entity\Comment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Product;
+use App\Entity\User;
 
 /**
  * @extends ServiceEntityRepository<Comment>
@@ -30,6 +31,19 @@ class CommentRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+
+    public function hasAlreadyCommented(User $user, Product $product): bool
+{
+    return (bool) $this->createQueryBuilder('c')
+        ->select('COUNT(c.id)')
+        ->where('c.author = :user')
+        ->andWhere('c.product = :product')
+        ->setParameter('user', $user)
+        ->setParameter('product', $product)
+        ->getQuery()
+        ->getSingleScalarResult();
+}
 
 //    /**
 //     * @return Comment[] Returns an array of Comment objects
