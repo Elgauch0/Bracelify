@@ -7,12 +7,23 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 
 class CommentCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
         return Comment::class;
+    }
+
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            // Désactive totalement la création de nouveaux commentaires
+            ->disable(Action::NEW);
+           
     }
 
     public function configureFields(string $pageName): iterable
