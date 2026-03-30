@@ -1,0 +1,20 @@
+services:
+  db_test:
+    image: docker.io/library/postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=symfony
+      - POSTGRES_PASSWORD=V9m!eQ4
+      - POSTGRES_DB=test
+    tmpfs: /var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U symfony" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+networks:
+  backend:
+    name: bracelify_net
+    external: true
