@@ -2,20 +2,17 @@
 
 namespace App\Entity;
 
+use App\Enum\OrderStatus;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use App\Enum\OrderStatus; 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
-class Order 
+class Order
 {
-
-    
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -37,7 +34,7 @@ class Order
     private ?string $sessionStripe = null;
 
     #[ORM\Column(length: 20, enumType: OrderStatus::class)]
-    private ?OrderStatus $Status = OrderStatus::PENDING;
+    private ?OrderStatus $status = OrderStatus::PENDING;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
@@ -109,20 +106,19 @@ class Order
         return $this;
     }
 
-
     public function recalculateTotal(): void
     {
-    $newTotal = 0;
-    foreach ($this->items as $item) {
-        $newTotal += $item->getTotalPrice();
-    }
-    $this->total = $newTotal;
+        $newTotal = 0;
+        foreach ($this->items as $item) {
+            $newTotal += $item->getTotalPrice();
+        }
+        $this->total = $newTotal;
     }
 
-    #[ORM\PrePersist] 
+    #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
-        if ($this->createdAt === null) {
+        if (null === $this->createdAt) {
             $this->createdAt = new \DateTimeImmutable();
         }
     }
@@ -141,12 +137,12 @@ class Order
 
     public function getStatus(): ?OrderStatus
     {
-        return $this->Status;
+        return $this->status;
     }
 
-    public function setStatus(OrderStatus $Status): static
+    public function setStatus(OrderStatus $status): static
     {
-        $this->Status = $Status;
+        $this->status = $status;
 
         return $this;
     }
