@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
@@ -20,17 +21,33 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private OrderRepository $orderRepository,
+        private RequestStack $requestStack,
         private ChartBuilderInterface $chartBuilder,
     ) {
     }
 
     public function index(): Response
     {
-        $chartData = $this->orderRepository->getMonthlySalesData(new \DateTimeImmutable());
-        $bestFiveClientsForMonth = $this->orderRepository->getFiveBestClients(new \DateTimeImmutable('2026-02-01'));
+        $request = $this->requestStack->getCurrentRequest();
 
+        // 1. Récupérer la date de l'URL (format YYYY-MM) ou le mois actuel par défaut
+        $dateQuery = $request->query->get('date', (new \DateTimeImmutable())->format('Y-m'));
+
+        // 2. Créer l'objet DateTime de manière sécurisée (on ajoute "-01" pour le jour)
+        try {
+            $currentDate = new \DateTimeImmutable($dateQuery.'-01');
+        } catch (\Exception $e) {
+            $currentDate = new \DateTimeImmutable();
+        }
+
+        // 3. Récupérer les données via les repositories
+        $chartData = $this->orderRepository->getMonthlySalesData($currentDate);
+        $bestFiveClientsForMonth = $this->orderRepository->getFiveBestClients($currentDate);
+
+        // 4. Préparation du Graphique
         $sum = array_sum($chartData);
         $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
+
         $chart->setData([
             'labels' => range(1, 31),
             'datasets' => [
@@ -43,23 +60,24 @@ class DashboardController extends AbstractDashboardController
                 ],
             ],
         ]);
+
         $chart->setOptions([
             'scales' => [
                 'y' => [
                     'suggestedMin' => 0,
-                    'suggestedMax' => max($chartData) + 1.2,
+                    'suggestedMax' => !empty($chartData) ? max($chartData) + 1.2 : 10,
                 ],
             ],
         ]);
 
+        // 5. Rendu du template
         return $this->render('admin/dashboard.html.twig', [
             'chart' => $chart,
             'totalSales' => $sum,
             'bestClients' => $bestFiveClientsForMonth,
+            // On renvoie la string formatée pour l'input HTML type="month"
+            'currentDateValue' => $currentDate->format('Y-m'),
         ]);
-
-        // return parent::index();
-        // return $this->redirect($this->generateUrl('admin_product_index'));
     }
 
     public function configureDashboard(): Dashboard

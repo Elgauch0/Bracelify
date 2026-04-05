@@ -17,9 +17,11 @@
 			{{ render_chart(chart) }}
 
 		</div>
-		<p>Total des ventes :
-			{{ totalSales | number_format(2, ',', ' ') }}
-			€</p>
+		<p>Total des ventes pour le mois sélectionné :
+			<strong>
+				{{ totalSales | number_format(2, ',', ' ') }}
+				€</p>
+		</p>
 	</div>
 	<div class="container-fluid p-4">
 		<div class="card p-3 shadow-sm">
@@ -41,6 +43,19 @@
 				</tbody>
 			</table>
 		</div>
+	</div>
+	<div class="admin-filter mb-4">
+		<form id="dateFilterForm" method="get" class="d-flex align-items-center gap-2">
+			<label for="date" class="fw-bold">Période :</label>
+
+			<input
+			type="month" id="date" name="date" value="{{ currentDateValue }}" class="form-control" style="width: auto;" onchange="this.form.submit()">
+			{# Soumet dès qu'on choisit un mois #}
+
+			<noscript>
+				<button type="submit" class="btn btn-primary">Filtrer</button>
+			</noscript>
+		</form>
 	</div>
 
 {% endblock %}

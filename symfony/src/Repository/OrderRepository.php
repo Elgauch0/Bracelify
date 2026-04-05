@@ -27,7 +27,7 @@ class OrderRepository extends ServiceEntityRepository
             ->innerJoin('o.items', 'i')
             ->where('o.client = :user')
             ->andWhere('i.product = :product')
-            ->andWhere('o.Status = :status')
+            ->andWhere('o.status = :status')
             ->setParameter('user', $user)
             ->setParameter('product', $product)
             ->setParameter('status', OrderStatus::PAID)
