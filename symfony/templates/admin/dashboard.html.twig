@@ -13,10 +13,33 @@
 		<h1 class="mb-4">Dashboard Admin</h1>
 		<div class="card p-3 shadow-sm">
 			<p>Bienvenue sur votre gestion des ventes.</p>
-			{# Le div ci-dessous est crucial pour la visibilité #}
-			<div style="position: relative; height: 400px; width: 100%;">
-				{{ render_chart(chart) }}
-			</div>
+
+			{{ render_chart(chart) }}
+
+		</div>
+		<p>Total des ventes :
+			{{ totalSales | number_format(2, ',', ' ') }}
+			€</p>
+	</div>
+	<div class="container-fluid p-4">
+		<div class="card p-3 shadow-sm">
+			<h2>Top 5 des clients du mois</h2>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Client</th>
+						<th>Total dépensé (€)</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for client in bestClients %}
+						<tr>
+							<td>{{ client.clientEmail }}</td>
+							<td>{{ (client.totalSpent) | number_format(2, ',', ' ') }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
 	</div>
 

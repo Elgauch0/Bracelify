@@ -26,14 +26,10 @@ class DashboardController extends AbstractDashboardController
 
     public function index(): Response
     {
-        $orders = $this->orderRepository->getHistoryOrders(new \DateTimeImmutable());
+        $chartData = $this->orderRepository->getMonthlySalesData(new \DateTimeImmutable());
+        $bestFiveClientsForMonth = $this->orderRepository->getFiveBestClients(new \DateTimeImmutable('2026-02-01'));
 
-        $chartData = array_fill(1, 31, 0);
-        foreach ($orders as $order) {
-            $day = (int) $order->getCreatedAt()->format('j');
-            $chartData[$day] += $order->getTotal() / 100;
-        }
-
+        $sum = array_sum($chartData);
         $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
         $chart->setData([
             'labels' => range(1, 31),
@@ -51,13 +47,15 @@ class DashboardController extends AbstractDashboardController
             'scales' => [
                 'y' => [
                     'suggestedMin' => 0,
-                    'suggestedMax' => 100,
+                    'suggestedMax' => max($chartData) + 1.2,
                 ],
             ],
         ]);
 
         return $this->render('admin/dashboard.html.twig', [
             'chart' => $chart,
+            'totalSales' => $sum,
+            'bestClients' => $bestFiveClientsForMonth,
         ]);
 
         // return parent::index();

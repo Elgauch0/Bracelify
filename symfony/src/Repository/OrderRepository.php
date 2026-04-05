@@ -35,19 +35,50 @@ class OrderRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getHistoryOrders(\DateTimeInterface $date): array
+    public function getMonthlySalesData(\DateTimeInterface $date): array
     {
-        $startOfMonth = (clone $date)->modify('first day of this month')->setTime(0, 0);
-        $endOfMonth = (clone $date)->modify('last day of this month')->setTime(23, 59, 59);
+        ['start' => $startOfMonth, 'end' => $endOfMonth] = $this->getMonthRange($date);
 
-        return $this->createQueryBuilder('o')
+        // On sélectionne juste les colonnes nécessaires, pas l'objet entier
+        $results = $this->createQueryBuilder('o')
+            ->select('o.createdAt, o.total')
             ->where('o.createdAt BETWEEN :start AND :end')
-            ->andWhere('o.status = :status')
+            ->andWhere('o.status IN (:statuses)')
             ->setParameter('start', $startOfMonth)
             ->setParameter('end', $endOfMonth)
-            ->setParameter('status', OrderStatus::PAID)
+            ->setParameter('statuses', [OrderStatus::PAID, OrderStatus::SHIPPED])
             ->getQuery()
-            ->getResult();
+            ->getScalarResult(); // On récupère un tableau de données brutes
+
+        $chartData = array_fill(1, 31, 0);
+
+        foreach ($results as $row) {
+            $day = (int) (new \DateTime($row['createdAt']))->format('j');
+            $chartData[$day] += $row['total'] / 100;
+        }
+
+        return $chartData;
+    }
+
+    public function getFiveBestClients(\DateTimeInterface $date): array
+    {
+        ['start' => $startOfMonth, 'end' => $endOfMonth] = $this->getMonthRange($date);
+
+        return $this->createQueryBuilder('o')
+            // On sélectionne l'email (unique) ou on concatène nom/prénom
+            ->select('u.email AS clientEmail, SUM(o.total) / 100 AS totalSpent')
+            ->innerJoin('o.client', 'u')
+            ->where('o.status IN (:statuses)')
+            ->andWhere('o.createdAt BETWEEN :start AND :end')
+            ->setParameter('start', $startOfMonth)
+            ->setParameter('end', $endOfMonth)
+            ->setParameter('statuses', [OrderStatus::PAID, OrderStatus::SHIPPED])
+            // On ajoute l'email au groupement pour respecter la norme SQL
+            ->groupBy('u.id, u.email')
+            ->orderBy('totalSpent', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getScalarResult(); // Retourne un tableau associatif simple
     }
 
     //    /**
@@ -74,4 +105,12 @@ class OrderRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    private function getMonthRange(\DateTimeInterface $date): array
+    {
+        return [
+            'start' => (clone $date)->modify('first day of this month')->setTime(0, 0, 0),
+            'end' => (clone $date)->modify('last day of this month')->setTime(23, 59, 59),
+        ];
+    }
 }
