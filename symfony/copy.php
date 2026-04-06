@@ -1,117 +1,137 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-	{{ product.name }}
-	- Ma Boutique
+
+{% block title %}Mon Profil -
+	{{ app.user.firstName }}
 {% endblock %}
 
 {% block body %}
+	<div class="max-w-4xl mx-auto py-10 px-4">
+		{% if app.user %}
 
-	<div class="max-w-6xl mx-auto py-10">
+			{# --- SECTION 1 : INFOS UTILISATEUR --- #}
+			<section class="mb-12">
+				<h1 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-4">Mon Profil</h1>
 
-		<a href="{{ path('app_public_products') }}" class="text-gray-600 hover:text-black transition mb-6 inline-block">
-			← Retour aux produits
-		</a>
+				<div class="bg-white shadow-sm border border-gray-100 rounded-xl p-6">
+					<dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+						<div>
+							<dt class="text-xs font-bold text-gray-400 uppercase tracking-tight">Prénom</dt>
+							<dd class="mt-1 text-lg text-gray-900 font-medium">{{ app.user.firstName }}</dd>
+						</div>
+						<div>
+							<dt class="text-xs font-bold text-gray-400 uppercase tracking-tight">Nom</dt>
+							<dd class="mt-1 text-lg text-gray-900 font-medium">{{ app.user.lastName }}</dd>
+						</div>
+						<div>
+							<dt class="text-xs font-bold text-gray-400 uppercase tracking-tight">Email</dt>
+							<dd class="mt-1 text-lg text-gray-900 font-medium">{{ app.user.email }}</dd>
+						</div>
+						<div>
+							<dt class="text-xs font-bold text-gray-400 uppercase tracking-tight">Adresse</dt>
+							<dd class="mt-1 text-lg text-gray-900 font-medium">{{ app.user.adress|default('Non renseignée') }}</dd>
+						</div>
+					</dl>
 
-		<div
-			data-controller="gallery" class="grid grid-cols-1 md:grid-cols-2 gap-10">
-
-			{# --- Galerie d’images --- #}
-			<div>
-				{% set firstImage = product.productImages|first %}
-
-				{# Image principale #}
-				{% if firstImage %}
-					<img src="/images/products/{{ firstImage.imageName }}" alt="{{ product.name }}" class="w-full h-96 object-cover rounded-xl shadow" data-gallery-target="mainImage">
-				{% else %}
-					<div class="w-full h-96 bg-gray-200 rounded-xl flex items-center justify-center text-gray-500">
-						Aucune image
+					<div class="mt-8 pt-6 border-t border-gray-50 text-right">
+						<a href="{{ path('app_profil_edit') }}" class="inline-flex items-center px-5 py-2.5 bg-tertiary text-white text-sm font-bold rounded-lg hover:bg-primary transition-all shadow-sm">
+							Modifier mes informations
+						</a>
 					</div>
-				{% endif %}
+				</div>
+			</section>
 
-				{# Miniatures #}
-				{% if product.productImages|length > 1 %}
-					<div class="grid grid-cols-4 gap-3 mt-4">
-						{% for image in product.productImages %}
-							<img src="/images/products/{{ image.imageName }}" data-action="click->gallery#change" alt="{{ product.name }}" class="h-24 w-full object-cover rounded-lg border hover:border-black cursor-pointer transition">
-						{% endfor %}
-					</div>
-				{% endif %}
-			</div>
+			{# --- SECTION 2 : HISTORIQUE DES COMMANDES --- #}
+			<section>
+				<h2 class="text-2xl font-bold text-gray-900 mb-6 font-sans">Historique des commandes</h2>
 
-			{# --- Infos produit --- #}
-			<div class="flex flex-col justify-between">
+				<div class="space-y-6">
+					{% for order in orders %}
+						<div
+							class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
 
-				<div>
-					<h1 class="text-3xl font-bold text-gray-900 mb-4">
-						{{ product.name }}
-					</h1>
+							{# En-tête de la commande #}
+							<div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
+								<div class="flex items-center gap-4">
+									<div>
+										<span class="text-[10px] font-black text-gray-400 uppercase block leading-none mb-1">Référence</span>
+										<span class="font-mono font-bold text-primary text-sm">#{{ order.id }}</span>
+									</div>
+									<div class="h-8 w-px bg-gray-200"></div>
+									<div>
+										<span class="text-[10px] font-black text-gray-400 uppercase block leading-none mb-1">Date</span>
+										<span class="text-sm font-semibold text-gray-700">{{ order.createdAt|date('d/m/Y') }}</span>
+									</div>
+								</div>
 
-					{# Prix #}
-					{% if product.discount > 0 %}
-						<div class="mb-4">
-							<span class="text-2xl font-bold text-red-600">
-								{{ (product.price - product.discount) / 100 }}
-								€
-							</span>
-							<span class="line-through text-gray-500 ml-3">
-								{{ product.price / 100 }}
-								€
-							</span>
+								<div class="flex items-center gap-6">
+									<div class="text-right">
+										<span class="text-[10px] font-black text-gray-400 uppercase block leading-none mb-1">Statut</span>
+										{% set colors = {
+                                        'PAID': 'bg-blue-100 text-blue-700',
+                                        'SHIPPED': 'bg-green-100 text-green-700',
+                                        'CANCELLED': 'bg-red-100 text-red-700'
+                                    } %}
+										<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black {{ colors[order.status.value] | default('bg-gray-100 text-gray-600') }}">
+											{{ order.status.value }}
+										</span>
+									</div>
+									<div class="text-right">
+										<span class="text-[10px] font-black  uppercase block leading-none mb-1 text-primary">Total TTC</span>
+										<span class="text-lg font-black text-gray-900">{{ (order.total / 100)|number_format(2, ',', ' ') }}
+											€</span>
+									</div>
+								</div>
+							</div>
+
+							{# Liste des Items achetés #}
+							<div class="px-6 py-2">
+								<ul class="divide-y divide-gray-100">
+									{% for item in order.items %}
+										<li class="py-4 flex justify-between items-center">
+											<div
+												class="flex items-center space-x-4">
+												{# Badge Quantité #}
+												<div class="bg-gray-50 border border-gray-100 h-10 w-10 rounded-lg flex items-center justify-center text-gray-600 text-xs font-black shadow-inner">
+													x{{ item.quantity }}
+												</div>
+												<div>
+													{# CORRECTION ICI : item.product.name au lieu de item.productName #}
+													<p class="text-sm font-bold text-gray-800 tracking-tight">
+														{{ item.product.name|default('Produit supprimé') }}
+													</p>
+													<p class="text-[11px] font-medium text-gray-400">
+														PU :
+														{{ (item.price / 100)|number_format(2, ',', ' ') }}
+														€
+													</p>
+												</div>
+											</div>
+											<div
+												class="text-sm font-bold text-gray-900">
+												{# Utilisation de ta méthode getTotalPrice() de l'entité PHP #}
+												{{ (item.totalPrice / 100)|number_format(2, ',', ' ') }}
+												€
+											</div>
+										</li>
+									{% endfor %}
+								</ul>
+							</div>
 						</div>
 					{% else %}
-						<p class="text-2xl font-semibold text-gray-900 mb-4">
-							{{ product.price / 100 }}
-							€
-						</p>
-					{% endif %}
-
-					{# Description #}
-					<p class="text-gray-700 leading-relaxed">
-						{{ product.description }}
-					</p>
-				</div>
-
-				{# CTA #}
-				<div class="mt-8">
-					<form action="{{ path('app_cart_add', {id: product.id}) }}" method="post" class="w-full bg-black text-white py-3 rounded-lg text-lg hover:bg-gray-800 transition">
-						<input type="hidden" name="_token" value="{{ csrf_token('add' ~ product.id) }}">
-						<button type="submit" class="w-full h-full">
-							Ajouter au panier
-						</button>
-					</form>
-				</div>
-
-			</div>
-
-		</div>
-
-	</div>
-	<hr style="margin-top: 50px;">
-
-	<div class="row mt-5">
-		<div class="col-12">
-			<h3 class="mb-4">Avis des passionnés de bracelets ({{ comments|length }})</h3>
-
-			{% for comment in comments %}
-				<div class="card mb-3 shadow-sm">
-					<div class="card-body">
-						<div class="d-flex justify-content-between">
-							<h6 class="card-title">
-								<i class="fas fa-user-circle"></i>
-								{{ comment.author.email }}
-							</h6>
-							<small class="text-muted">{{ comment.createdAt|date('d/m/Y') }}</small>
+						<div class="text-center py-16 bg-white rounded-xl border-2 border-dashed border-gray-100">
+							<p class="text-gray-400 font-medium">Vous n'avez pas encore passé de commande.</p>
 						</div>
-						<p class="card-text">{{ comment.content|nl2br }}</p>
-					</div>
+					{% endfor %}
 				</div>
-			{% else %}
-				<div class="alert alert-light border">
-					Aucun avis n'a encore été publié pour ce modèle.
-				</div>
-			{% endfor %}
-		</div>
+			</section>
+
+		{% else %}
+			<div class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-100">
+				<p class="text-lg text-gray-500 mb-6">Accès restreint. Veuillez vous identifier.</p>
+				<a href="{{ path('app_login') }}" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:shadow-lg transition-all">
+					Se connecter
+				</a>
+			</div>
+		{% endif %}
 	</div>
-
-
 {% endblock %}
