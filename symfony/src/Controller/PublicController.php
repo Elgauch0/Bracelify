@@ -74,4 +74,10 @@ final class PublicController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/about', name: 'app_public_about', methods: ['GET'])]
+    public function about(): Response
+    {
+        return $this->render('public/about.html.twig');
+    }
 }
