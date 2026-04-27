@@ -32,4 +32,19 @@ class SecurityController extends AbstractController
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
+
+
+    #[Route(path: '/login-role-redirect', name: 'app_login_role_redirect')]
+    public function loginRoleRedirect(): Response
+    {
+       $user = $this->getUser();
+
+       if(in_array('ROLE_ADMIN', $user->getRoles())){
+           return $this->redirectToRoute('admin');
+       } elseif (in_array('ROLE_USER', $user->getRoles())) {
+           return $this->redirectToRoute('app_profil');
+       } else {
+           return $this->redirectToRoute('app_logout');
+       }
+    }
 }
