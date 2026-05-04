@@ -81,6 +81,22 @@ class OrderRepository extends ServiceEntityRepository
             ->getScalarResult(); // Retourne un tableau associatif simple
     }
 
+
+
+    private function getMonthRange(\DateTimeInterface $date): array
+    {
+        /** @var \DateTimeImmutable $date*/
+
+        return [
+            'start' => (clone $date)->modify('first day of this month')->setTime(0, 0, 0),
+            'end' => (clone $date)->modify('last day of this month')->setTime(23, 59, 59),
+        ];
+    }
+}
+
+
+
+
     //    /**
     //     * @return Order[] Returns an array of Order objects
     //     */
@@ -105,12 +121,3 @@ class OrderRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-
-    private function getMonthRange(\DateTimeInterface $date): array
-    {
-        return [
-            'start' => (clone $date)->modify('first day of this month')->setTime(0, 0, 0),
-            'end' => (clone $date)->modify('last day of this month')->setTime(23, 59, 59),
-        ];
-    }
-}

@@ -36,9 +36,18 @@ class DashboardController extends AbstractDashboardController
         // 2. Créer l'objet DateTime de manière sécurisée (on ajoute "-01" pour le jour)
         try {
             $currentDate = new \DateTimeImmutable($dateQuery.'-01');
+
+
+            
+            if($currentDate > new \DateTimeImmutable()) {
+                $currentDate = new \DateTimeImmutable();
+            }
         } catch (\Exception $e) {
             $currentDate = new \DateTimeImmutable();
         }
+
+
+       
 
         // 3. Récupérer les données via les repositories
         $chartData = $this->orderRepository->getMonthlySalesData($currentDate);
