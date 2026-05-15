@@ -1,0 +1,19 @@
+# Git
+.git
+.gitignore
+
+# Symfony
+symfony/var/
+symfony/vendor/
+symfony/public/bundles/
+symfony/public/images/products/*
+
+# Tests et Fixtures
+symfony/tests/
+symfony/src/DataFixtures/
+
+# Docker et Config
+Dockerfile*
+docker-compose*
+.env.local
+.env.test
