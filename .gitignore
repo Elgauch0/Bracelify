@@ -32,3 +32,4 @@ docker-compose.override.yml
 
 # Docker local  env
 .env.*
+/symfony/public/images/products/*.jpg
