@@ -13,6 +13,9 @@ services:
       - uploads_data:/app/public/images/products:Z
     tmpfs:
       - /app/var:exec 
+    environment:
+      - APP_ENV=prod
+      - APP_DEBUG=0
     env_file:
       - .env.php
     networks:

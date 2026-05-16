@@ -15,6 +15,9 @@ services:
     tmpfs:
       - /app/var:exec
       - /app/var/log
+    environment:
+      - APP_ENV=dev
+      - APP_DEBUG=1
     env_file:
       - .env.php
     networks:
