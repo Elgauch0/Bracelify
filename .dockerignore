@@ -17,3 +17,4 @@ Dockerfile*
 docker-compose*
 .env.local
 .env.test
+compose*

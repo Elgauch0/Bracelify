@@ -38,10 +38,15 @@ jobs:
 
       - name: Install dependencies
         working-directory: symfony
-        run: composer install --no-interaction --prefer-dist
-
+        run: composer install --no-interaction --prefer-dist --no-scripts
+        
+      - name: Install ImportMap Assets
+        working-directory: symfony
+        run: php bin/console importmap:install
+    
       - name: Run tests
         working-directory: symfony
         env:
-          DATABASE_URL: "postgresql://test:test@postgres:5432/test"
+          DATABASE_URL: postgresql://test:test@127.0.0.1:5432/test?serverVersion=16&charset=utf8
+          KERNEL_CLASS: App\Kernel
         run: APP_ENV=test php bin/phpunit
