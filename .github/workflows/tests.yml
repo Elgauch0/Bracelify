@@ -37,9 +37,11 @@ jobs:
           coverage: none
 
       - name: Install dependencies
+        working-directory: symfony
         run: composer install --no-interaction --prefer-dist
 
       - name: Run tests
+        working-directory: symfony
         env:
-          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+          DATABASE_URL: "postgresql://test:test@postgres:5432/test"
         run: APP_ENV=test php bin/phpunit
