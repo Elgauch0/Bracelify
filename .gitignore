@@ -10,7 +10,6 @@ symfony/var/cache/
 symfony/var/log/
 
 # Composer
-symfony/composer.lock
 symfony/composer.phar
 
 # Node / Front-end (si tu ajoutes un front plus tard)

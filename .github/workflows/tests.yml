@@ -1,15 +1,18 @@
-name: Run Symfony Tests
+name: CI/CD Pipeline
 
 on:
-  workflow_dispatch:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
+  # 1. ÉTAPE DE VÉRIFICATION (S'exécute en PR et sur Main)
   tests:
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres:16
@@ -50,7 +53,8 @@ jobs:
           DATABASE_URL: postgresql://test:test@127.0.0.1:5432/test?serverVersion=16&charset=utf8
           KERNEL_CLASS: App\Kernel
         run: APP_ENV=test php bin/phpunit
-  
+
+  # 2. ÉTAPE DOCKER (Le build est testé EN PR, le push n'est fait que sur Main)
   build_and_push_to_registry:
     runs-on: ubuntu-latest
     needs: tests
@@ -58,7 +62,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # On ne se connecte à Docker Hub QUE si on est sur main (sécurité des secrets)
       - name: Log in to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -71,7 +77,8 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          push: true
+          # TRÈS IMPORTANT : push est "true" uniquement sur main, "false" pendant la PR
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/bracelify:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/bracelify:v${{ github.run_number }}
