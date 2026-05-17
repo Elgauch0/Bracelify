@@ -31,16 +31,13 @@ COPY ./symfony .
 
 # 7. Finalisation du build
 RUN composer dump-autoload --no-dev --optimize
+RUN php bin/console importmap:install  
 RUN php bin/console tailwind:build --minify
 RUN php bin/console asset-map:compile
-RUN php bin/console cache:clear
+RUN php bin/console cache:clear --no-warmup
 
 RUN composer dump-env prod --empty
 
-# Permissions
-USER root
+
 RUN chown -R www-data:www-data /app/var /app/public
 
-# On reste en root pour que FrankenPHP puisse binder le port 80
-# FrankenPHP est conçu pour descendre ses privilèges tout seul
-USER root
