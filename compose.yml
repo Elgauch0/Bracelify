@@ -1,6 +1,6 @@
 services:
   php:
-    image: docker.io/elkaouri/bracelify:v1
+    image: docker.io/elkaouri/bracelify:latest
     ports:
       - "80:80"
       - "443:443"
