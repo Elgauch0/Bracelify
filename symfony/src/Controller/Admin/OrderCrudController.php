@@ -26,7 +26,7 @@ class OrderCrudController extends AbstractCrudController
 {
     return $actions
         // Désactive le bouton "New" (Créer) en haut de la page
-        ->disable(Action::NEW)
+        ->disable(Action::NEW, Action::DELETE) // Désactive aussi le bouton "Delete" pour éviter les suppressions accidentelles
         // Ajoute le bouton "Consulter" pour voir les détails sans modifier
         ->add(Crud::PAGE_INDEX, Action::DETAIL);
 }
@@ -67,7 +67,8 @@ class OrderCrudController extends AbstractCrudController
      ]),
    
         CollectionField::new('items', 'Articles')
-            ->onlyOnDetail(),
+            ->onlyOnDetail()
+            ->setTemplatePath('admin/order_items_detail.html.twig'),
 
         // Affiche l'email du client (lecture seule)
         TextField::new('client.email', 'Email du Client')
