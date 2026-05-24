@@ -1,0 +1,46 @@
+{# templates/admin/order_items_detail.html.twig #}
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>Image</th>
+			<th>Produit</th>
+			<th>Quantité</th>
+			<th>Prix Unitaire</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in field.value %}
+			<tr>
+				<td
+					style="width: 80px; text-align: center; vertical-align: middle;">
+					{# 1. Vérification de l'existence du produit et de ses images #}
+					{% if item.product and item.product.productImages|length > 0 %}
+						{# 2. Extraction de la première entité ProductImage de la collection #}
+						{% set firstProductImage = item.product.productImages.first %}
+
+						{# 3. Utilisation de la propriété correcte : imageName #}
+						<img src="{{ asset('images/products/' ~ firstProductImage.imageName) }}" alt="{{ item.product.name }}" style="max-width: 220px; max-height: 220px; object-fit: cover; border-radius: 4px;">
+					{% else %}
+						<span class="text-muted">
+							<i class="fa fa-image"></i>
+							Aucun</span>
+					{% endif %}
+				</td>
+				<td style="vertical-align: middle;">
+					<strong>{{ item.product.name ?? 'Produit inconnu' }}</strong>
+				</td>
+				<td style="vertical-align: middle;">
+					{{ item.quantity }}
+				</td>
+				<td style="vertical-align: middle;">
+					{{ (item.price / 100)|number_format(2, ',', ' ') }}
+					€
+				</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="4" class="text-center text-muted">Aucun article dans cette commande.</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

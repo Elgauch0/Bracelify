@@ -26,6 +26,7 @@ WORKDIR /app
 COPY ./symfony/composer.json ./symfony/composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader
 
+
 # 6. Copie du reste du code
 COPY ./symfony .
 
@@ -34,7 +35,8 @@ RUN composer dump-autoload --no-dev --optimize
 RUN php bin/console importmap:install  
 RUN php bin/console tailwind:build --minify
 RUN php bin/console asset-map:compile
-RUN php bin/console cache:clear --no-warmup
+RUN php bin/console cache:clear --no-warmup --env=prod \
+    && php bin/console assets:install public --env=prod
 
 RUN composer dump-env prod --empty
 
