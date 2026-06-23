@@ -83,9 +83,10 @@
 			<div class="mt-auto pt-8 border-t border-gray-100">
 				<form action="{{ path('app_cart_add', {id: product.id}) }}" method="post">
 					<input type="hidden" name="_token" value="{{ csrf_token('add' ~ product.id) }}">
-					<button type="submit" class="w-full bg-tertiary text-white py-4 rounded-xl text-lg font-bold hover:bg-primary transform transition active:scale-95 shadow-xl">
+					<button type="submit" class="w-full bg-tertiary text-white py-4 rounded-xl text-lg font-bold hover:bg-primary transform transition active:scale-95 shadow-xl" disabled>
 						AJOUTER AU PANIER
 					</button>
+					<p class="text-red-600 text-sm mt-2 italic">Le site est en cours de développement, le site est en cours de développement, le site est en cours de développement.</p>
 				</form>
 			</div>
 		</div>
