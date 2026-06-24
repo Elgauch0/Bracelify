@@ -2,6 +2,9 @@ FROM docker.io/dunglas/frankenphp:php8.4-bookworm
 
 # 1. Variables d'environnement de production
 ENV APP_ENV=prod
+ENV SERVER_NAME=alinicreations.com
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 
 # 2. Dépendances système
