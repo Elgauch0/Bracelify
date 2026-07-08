@@ -1,144 +1,71 @@
-{% extends "base.html.twig" %}
-
-{% block title %}À propos | Bracelify
-{% endblock %}
-
-{% block body %}
-
-
+<header data-controller="mobilebtn" class="bg-text shadow-md">
 	<div
-		class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-32">
+		class="max-w-7xl mx-auto px-4 py-2 flex items-center md:justify-around justify-between ">
 
-		<!-- HERO -->
-		<section class="relative bg-white text-center rounded-2xl shadow-md px-6 py-20 sm:py-24 mb-16">
-			<div class="max-w-4xl mx-auto">
+		<!-- Logo -->
+		<a href="/" class="text-2xl font-bold text-tertiary">
+			<img src="{{ asset('images/logo.svg') }}" alt="Alini logo" class="h-10 w-auto object-contain -mt-4">
+		</a>
 
-				<h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-darker leading-tight">
-					L’art de créer avec passion
-				</h1>
+		<!-- Navigation -->
+		<nav class="hidden md:flex space-x-8">
+			<a href="{{ path('app_public_products') }}" class="text-text-darker hover:text-text transition">Produits</a>
+			<a href="{{ path('app_public_about') }}" class="text-text-darker hover:text-text transition">À propos</a>
+			<a href="{{path('app_contact')}}" class="text-text-darker hover:text-text transition">Contact</a>
 
-				<p class="mt-6 text-gray-500 max-w-2xl mx-auto">
-					Bracelify conçoit des bracelets artisanaux pensés pour durer,
-																									                raconter une histoire et refléter une personnalité.
-				</p>
+		</nav>
 
-				<!-- STATS -->
-				<div class="mt-12 flex justify-center flex-wrap gap-10">
-					<div class="border-l-2 border-primary pl-4 text-left">
-						<p class="text-2xl font-bold">100%</p>
-						<p class="text-xs text-gray-400 uppercase">Fait main</p>
-					</div>
 
-					<div class="border-l-2 border-primary pl-4 text-left">
-						<p class="text-2xl font-bold">+500</p>
-						<p class="text-xs text-gray-400 uppercase">Créations</p>
-					</div>
-
-					<div class="border-l-2 border-primary pl-4 text-left">
-						<p class="text-2xl font-bold">3 ans</p>
-						<p class="text-xs text-gray-400 uppercase">Expérience</p>
-					</div>
-				</div>
-
-			</div>
-		</section>
-
-		<!-- SECTION 1 -->
-		<section class="grid md:grid-cols-2 gap-10 items-center py-10">
-			<img src="{{ asset('images/bracelifyhand.jpg') }}" alt="Bracelet fait main" class="w-full max-w-md mx-auto rounded-2xl shadow-md object-cover">
-
-			<div class="space-y-4">
-				<span class="text-xs uppercase tracking-widest text-primary font-semibold">Mission</span>
-				<h2 class="text-2xl md:text-3xl font-bold text-text-darker">
-					Valoriser l’artisanat
-				</h2>
-				<p class="text-gray-600 leading-relaxed">
-					Chaque bracelet est conçu comme une pièce unique, loin de la production de masse.
-																									                Nous privilégions la qualité, la durabilité et l’émotion.
-				</p>
-			</div>
-		</section>
-
-		<!-- SECTION 2 -->
-		<section class="grid md:grid-cols-2 gap-10 items-center">
-
-			<div class="md:order-2">
-				<img src="{{ asset('images/bracelifyhand2.jpg') }}" alt="Fabrication bracelet" class="w-full max-w-md mx-auto rounded-2xl shadow-md object-cover">
-			</div>
-
-			<div class="space-y-4 md:order-1">
-				<span class="text-xs uppercase tracking-widest text-primary font-semibold">Savoir-faire</span>
-				<h2 class="text-2xl md:text-3xl font-bold text-text-darker">
-					Le travail de la main
-				</h2>
-				<p class="text-gray-600 leading-relaxed">
-					Tressage, assemblage, finition — chaque étape est réalisée avec précision.
-																									                Nous sélectionnons des matériaux durables pour garantir qualité et confort.
-				</p>
-			</div>
-		</section>
-
-		<!-- SECTION 3 -->
-		<section class="grid md:grid-cols-2 gap-10 items-center">
-			<img src="{{ asset('images/mizharia.jpg') }}" alt="Bracelet style" class="w-full max-w-md mx-auto rounded-2xl shadow-md object-cover">
-
-			<div class="space-y-4">
-				<span class="text-xs uppercase tracking-widest text-primary font-semibold">Identité</span>
-				<h2 class="text-2xl md:text-3xl font-bold text-text-darker">
-					Un style unique
-				</h2>
-				<p class="text-gray-600 leading-relaxed">
-					Chaque création s’adapte à votre style.
-																									                Minimaliste ou audacieuse, elle devient une extension de votre personnalité.
-				</p>
-			</div>
-		</section>
-
-		<!-- ENGAGEMENT -->
-		<section class="bg-gray-50 rounded-2xl px-6 py-14 text-center mt-16">
-			<h2 class="text-2xl md:text-3xl font-bold text-text-darker mb-4">
-				Créer mieux, pas plus
-			</h2>
-
-			<p class="text-gray-600 max-w-2xl mx-auto mb-10">
-				Nous produisons en petites séries, utilisons des matériaux responsables
-																				            et privilégions les circuits courts.
-			</p>
-
-			<div class="grid sm:grid-cols-3 gap-8">
-				<div>
-					<p class="text-2xl">♻️</p>
-					<p class="text-sm mt-2 text-gray-600">Emballages recyclés</p>
-				</div>
-
-				<div>
-					<p class="text-2xl">🤝</p>
-					<p class="text-sm mt-2 text-gray-600">Fournisseurs locaux</p>
-				</div>
-
-				<div>
-					<p class="text-2xl">⏳</p>
-					<p class="text-sm mt-2 text-gray-600">Durabilité</p>
-				</div>
-			</div>
-		</section>
-
-		<!-- CTA -->
-		<section class="bg-primary text-white rounded-2xl text-center py-14 px-6">
-			<h2 class="text-2xl md:text-3xl font-bold mb-4">
-				Trouvez votre bracelet
-			</h2>
-
-			<p class="text-white/80 mb-6">
-				Découvrez nos créations artisanales uniques.
-			</p>
-
-			<a href="{{ path('app_public_products') }}" class="inline-block bg-white text-primary px-6 py-3 rounded-full font-semibold transition transform hover:scale-105 hover:shadow-md">
-				Voir la boutique
+		<!-- Bouton Connexion -->
+		{% if app.user %}
+			<a href="{{ logout_path() }}" class="hidden md:inline-block text-text-darker px-4 py-2 rounded-lg hover:text-text transition">
+				Se déconnecter
 			</a>
-		</section>
+		{% else %}
+			<a href="{{ path('app_login') }}" class="hidden md:inline-block text-text-darker px-4 py-2 rounded-lg hover:text-text transition">
+				Se connecter
+			</a>
+		{% endif %}
+
+		{% set cartQuantity = app.session.get('cart', [])|reduce((total, qty) => total + qty, 0) %}
+
+		<div class="hidden md:flex items-center space-x-4">
+			{% if cartQuantity > 0 %}
+				<a href="{{ path('app_cart_index') }}" class="relative group p-2 text-gray-700 hover:text-black transition">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
+					</svg>
+					<span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+						{{ cartQuantity }}
+					</span>
+				</a>
+			{% endif %}
+		</div>
+
+		<!-- Menu mobile -->
+		<button data-mobilebtn-target="burger" data-action="mobilebtn#toggle" class=" md:hidden text-tertiary text-2xl">
+			☰
+		</button>
+
 
 	</div>
+	<!-- Menu mobile déroulant -->
+	<nav data-mobilebtn-target="menu" class="hidden md:hidden bg-text-darker text-text p-4 space-y-4">
 
-{% endblock %}
-
+		<a href="{{ path('app_public_products') }}" class="block">Produits</a>
+		<a href="{{ path('app_public_about') }}" class="block">À propos</a>
+		<a href="{{path('app_contact')}}" class="block">Contact</a>
+		{% if cartQuantity > 0 %}
+			<a href="{{ path('app_cart_index') }}" class="block font-bold">Mon Panier ({{ cartQuantity }})</a>
+		{% endif %}
+		{% if app.user %}
+			<a href="{{ logout_path() }}" class="block text-red-500 hover:text-red-700">
+				Se déconnecter
+			</a>
+		{% else %}
+			<a href="{{ path('app_login') }}" class="block ">
+				Se connecter
+			</a>
+		{% endif %}
+	</nav>
+</header>
