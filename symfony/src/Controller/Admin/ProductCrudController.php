@@ -8,7 +8,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -37,7 +36,9 @@ class ProductCrudController extends AbstractCrudController
         yield MoneyField::new('price', 'prix')->setCurrency('EUR');
         yield MoneyField::new('discount', 'réduction en euro')->setCurrency('EUR');
         yield AssociationField::new('category');
-        yield CollectionField::new('productImages', 'image')
+        yield AssociationField::new('productCollections', 'Collections associées')
+            ->setFormTypeOption('by_reference', false)
+            ->hideOnIndex();        yield CollectionField::new('productImages', 'image')
             ->setEntryType(ImageProductFormType::class)->hideOnIndex();
     }
 

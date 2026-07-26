@@ -60,11 +60,18 @@ class Product
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'product', orphanRemoval: true)]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, ProductCollection>
+     */
+    #[ORM\ManyToMany(targetEntity: ProductCollection::class, mappedBy: 'product')]
+    private Collection $productCollections;
+
     public function __construct()
     {
         $this->orderItems = new ArrayCollection();
         $this->productImages = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->productCollections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -267,5 +274,32 @@ class Product
         if ($this->Quantity === null) {
             $this->Quantity = 0; // Ou une autre valeur par défaut
         }
+    }
+
+    /**
+     * @return Collection<int, ProductCollection>
+     */
+    public function getProductCollections(): Collection
+    {
+        return $this->productCollections;
+    }
+
+    public function addProductCollection(ProductCollection $productCollection): static
+    {
+        if (!$this->productCollections->contains($productCollection)) {
+            $this->productCollections->add($productCollection);
+            $productCollection->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductCollection(ProductCollection $productCollection): static
+    {
+        if ($this->productCollections->removeElement($productCollection)) {
+            $productCollection->removeProduct($this);
+        }
+
+        return $this;
     }
 }
