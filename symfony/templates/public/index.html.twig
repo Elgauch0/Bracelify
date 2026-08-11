@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block body %}
-	{% include "partials/_presentation.html.twig" %}
+
+	<div class=" mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-12">
+
+		{% include "partials/_presentation.html.twig" %}
+		{% include "partials/_bienvenue.html.twig" %}
+	</div>
 
 {% endblock %}
