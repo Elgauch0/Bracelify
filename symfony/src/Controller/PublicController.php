@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
 final class PublicController extends AbstractController
 {
     #[Route('/', name: 'app_public')]
@@ -50,7 +51,7 @@ final class PublicController extends AbstractController
             throw $this->createNotFoundException('Product not found');
         }
 
-        /** @var User user */
+        /** @var \App\Entity\User|null $user */
         $user = $this->getUser();
         $isAllowedToComment = $commentService->isAllowed($user, $product);
         $comments = $commentRepository->getcommentsbyarticle($product);
@@ -80,4 +81,9 @@ final class PublicController extends AbstractController
     {
         return $this->render('public/about.html.twig');
     }
+
+
+
+   
+
 }

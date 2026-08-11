@@ -77,7 +77,23 @@
 						{{ product.description }}
 					</p>
 				</div>
-			</div>
+
+
+				{# Catégorie #}
+				{% if product.productCollections is not empty %}
+
+
+					<p class="text-sm text-gray-600">
+						Collections :
+						{% for collection in product.productCollections %}
+							<span class="font-medium">{{ collection.label }}</span>
+							{% if not loop.last %},
+							{% endif %}
+						{% endfor %}
+
+					</p>
+				</div>
+			{% endif %}
 
 			{# CTA Panier #}
 			<div class="mt-auto pt-8 border-t border-gray-100">
