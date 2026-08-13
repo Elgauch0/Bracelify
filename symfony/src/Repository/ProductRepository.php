@@ -38,6 +38,24 @@ class ProductRepository extends ServiceEntityRepository
           ->getResult();
     }
 
+   public function findAvailableProductsWithFilters(?int $categoryId = null, ?int $collectionId = null): array
+{
+    $qb = $this->createQueryBuilder('p')
+        ->andWhere('p.Quantity > 0');
+
+    if ($categoryId) {
+        $qb->andWhere('p.category = :categoryId')
+           ->setParameter('categoryId', $categoryId);
+    }
+
+    if ($collectionId) {
+        $qb->innerJoin('p.productCollections', 'col')
+           ->andWhere('col.id = :collectionId')
+           ->setParameter('collectionId', $collectionId);
+    }
+
+    return $qb->getQuery()->getResult();
+}
 
 
 

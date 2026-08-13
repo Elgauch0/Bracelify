@@ -1,71 +1,62 @@
-<header data-controller="mobilebtn" class="bg-text shadow-md">
-	<div
-		class="max-w-7xl mx-auto px-4 py-2 flex items-center md:justify-around justify-between ">
+{% extends 'base.html.twig' %}
 
-		<!-- Logo -->
-		<a href="/" class="text-2xl font-bold text-tertiary">
-			<img src="{{ asset('images/logo.svg') }}" alt="Alini logo" class="h-10 w-auto object-contain -mt-4">
-		</a>
+{% block body %}
+	{% set base_btn_class = "px-4 py-2 rounded-lg border shrink-0 transition" %}
+	{% set active_class = "bg-tertiary text-white" %}
+	{% set inactive_class = "hover:bg-tertiary hover:text-white" %}
 
-		<!-- Navigation -->
-		<nav class="hidden md:flex space-x-8">
-			<a href="{{ path('app_public_products') }}" class="text-text-darker hover:text-text transition">Produits</a>
-			<a href="{{ path('app_public_about') }}" class="text-text-darker hover:text-text transition">À propos</a>
-			<a href="{{path('app_contact')}}" class="text-text-darker hover:text-text transition">Contact</a>
+	<div class="m-12 flex flex-col items-center gap-6">
+		<h1 class="text-3xl font-bold">Nos Produits :</h1>
 
+		{# NAV DES CATÉGORIES #}
+		<nav class="w-full overflow-hidden">
+			<div
+				class="flex gap-4 overflow-x-auto justify-center overflow-y-hidden pb-2 scrollbar-none max-w-full">
+
+				{# Bouton : Toutes les catégories (conserve le filtre collection s'il existe) #}
+				<a href="{{ path('app_public_products', { collection: currentCollection|default(null) }|filter(v => v is not null)) }}" class="{{ base_btn_class }} {{ not currentCategory ? active_class : inactive_class }}">
+					Toutes les catégories
+				</a>
+
+				{% for category in categories %}
+					{% set is_active = (currentCategory == category.id) %}
+					<a href="{{ path('app_public_products', { category: category.id, collection: currentCollection|default(null) }|filter(v => v is not null)) }}" class="{{ base_btn_class }} {{ is_active ? active_class : inactive_class }}">
+						{{ category.label }}
+					</a>
+				{% endfor %}
+
+			</div>
 		</nav>
 
+		{# NAV DES COLLECTIONS #}
+		<nav class="w-full overflow-hidden">
+			<div
+				class="flex gap-4 overflow-x-auto justify-center overflow-y-hidden pb-2 scrollbar-none max-w-full">
 
-		<!-- Bouton Connexion -->
-		{% if app.user %}
-			<a href="{{ logout_path() }}" class="hidden md:inline-block text-text-darker px-4 py-2 rounded-lg hover:text-text transition">
-				Se déconnecter
-			</a>
-		{% else %}
-			<a href="{{ path('app_login') }}" class="hidden md:inline-block text-text-darker px-4 py-2 rounded-lg hover:text-text transition">
-				Se connecter
-			</a>
-		{% endif %}
-
-		{% set cartQuantity = app.session.get('cart', [])|reduce((total, qty) => total + qty, 0) %}
-
-		<div class="hidden md:flex items-center space-x-4">
-			{% if cartQuantity > 0 %}
-				<a href="{{ path('app_cart_index') }}" class="relative group p-2 text-gray-700 hover:text-black transition">
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
-					</svg>
-					<span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-						{{ cartQuantity }}
-					</span>
+				{# Bouton : Toutes les collections (conserve le filtre catégorie s'il existe) #}
+				<a href="{{ path('app_public_products', { category: currentCategory|default(null) }|filter(v => v is not null)) }}" class="{{ base_btn_class }} {{ not currentCollection ? active_class : inactive_class }}">
+					Toutes les collections
 				</a>
-			{% endif %}
-		</div>
 
-		<!-- Menu mobile -->
-		<button data-mobilebtn-target="burger" data-action="mobilebtn#toggle" class=" md:hidden text-tertiary text-2xl">
-			☰
-		</button>
+				{% for collection in collections %}
+					{% set is_active = (currentCollection == collection.id) %}
+					<a href="{{ path('app_public_products', { category: currentCategory|default(null), collection: collection.id }|filter(v => v is not null)) }}" class="{{ base_btn_class }} {{ is_active ? active_class : inactive_class }}">
+						{{ collection.label }}
+					</a>
+				{% endfor %}
 
-
+			</div>
+		</nav>
 	</div>
-	<!-- Menu mobile déroulant -->
-	<nav data-mobilebtn-target="menu" class="hidden md:hidden bg-text-darker text-text p-4 space-y-4">
 
-		<a href="{{ path('app_public_products') }}" class="block">Produits</a>
-		<a href="{{ path('app_public_about') }}" class="block">À propos</a>
-		<a href="{{path('app_contact')}}" class="block">Contact</a>
-		{% if cartQuantity > 0 %}
-			<a href="{{ path('app_cart_index') }}" class="block font-bold">Mon Panier ({{ cartQuantity }})</a>
-		{% endif %}
-		{% if app.user %}
-			<a href="{{ logout_path() }}" class="block text-red-500 hover:text-red-700">
-				Se déconnecter
-			</a>
+	{# GRID DES PRODUITS #}
+	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+		{% for product in products %}
+			<twig:product_card :product="product"/>
 		{% else %}
-			<a href="{{ path('app_login') }}" class="block ">
-				Se connecter
-			</a>
-		{% endif %}
-	</nav>
-</header>
+			<p class="text-center text-gray-500 col-span-full">
+				Aucun produit disponible pour cette sélection.
+			</p>
+		{% endfor %}
+	</div>
+{% endblock %}
