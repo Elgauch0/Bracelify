@@ -1,51 +1,66 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	{# Définition des classes en amont pour la clarté et éviter les bugs de formateur #}
-	{% set base_btn_class = "px-4 py-2 rounded-lg border shrink-0 transition" %}
-	{% set active_class = "bg-tertiary text-white" %}
-	{% set inactive_class = "hover:bg-tertiary hover:text-white" %}
+	{% set base_btn_class = "px-4 py-2 rounded-full border border-gray-200 shrink-0 whitespace-nowrap text-sm font-medium transition-all duration-200 ease-in-out" %}
+	{% set active_class = "bg-tertiary text-white border-tertiary shadow-md" %}
+	{% set inactive_class = "bg-white text-gray-700 hover:bg-tertiary/10 hover:border-tertiary hover:text-tertiary" %}
 
-	<div class="m-12 flex flex-col items-center">
-		<h1 class="text-3xl font-bold mb-8">Nos Produits :</h1>
 
-		{# NAV DES CATÉGORIES #}
-		<nav class="mb-8 w-full overflow-hidden">
-			<div
-				class="flex gap-4 overflow-x-auto justify-center overflow-y-hidden pb-2 scrollbar-none max-w-full">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12 flex flex-col items-center gap-8">
+		<h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">Nos Produits</h1>
 
-				{# Bouton : Toutes les catégories #}
-				<a href="{{ path('app_public_products') }}" class="{{ base_btn_class }} {{ not currentCategory ? active_class : inactive_class }}">
-					Toutes
-				</a>
+		<div
+			class="w-full flex flex-col gap-4">
+			{# NAV DES CATÉGORIES #}
+			<nav class=" flex justify-center">
+				<div class="flex gap-3 overflow-x-auto justify-start sm:justify-center overflow-y-hidden pb-2 px-1 scrollbar-none max-w-full">
 
-				{# Boucle sur les catégories #}
-				{% for category in categories %}
-					{# On stocke le résultat du test dans une variable pour la lisibilité #}
-					{% set is_active = (currentCategory == category.id) %}
-
-					<a href="{{ path('app_public_products', { category: category.id }) }}" class="{{ base_btn_class }} {{ is_active ? active_class : inactive_class }}">
-						{{ category.label }}
+					<a href="{{ path('app_public_products', { collection: currentCollection|default(null) }|filter(v => v is not null)) }}" class="{{ base_btn_class }} {{ not currentCategory ? active_class : inactive_class }}">
+						Toutes les catégories
 					</a>
-				{% endfor %}
 
-			</div>
-		</nav>
+					{% for category in categories %}
+						{% set is_active = (currentCategory == category.id) %}
+						<a href="{{ path('app_public_products', { category: category.id, collection: currentCollection|default(null) }|filter(v => v is not null)) }}" class="{{ base_btn_class }} {{ is_active ? active_class : inactive_class }}">
+							{{ category.label }}
+						</a>
+					{% endfor %}
+
+				</div>
+			</nav>
+
+			{% if collections is not empty %}
+				{# NAV DES COLLECTIONS #}
+				<nav class="flex justify-center">
+					<div class="flex gap-3 overflow-x-auto justify-start sm:justify-center overflow-y-hidden pb-2 px-1 scrollbar-none max-w-full">
+
+						<a href="{{ path('app_public_products', { category: currentCategory|default(null) }|filter(v => v is not null)) }}" class="{{ base_btn_class }} {{ not currentCollection ? active_class : inactive_class }}">
+							Toutes les collections
+						</a>
+
+						{% for collection in collections %}
+							{% set is_active = (currentCollection == collection.id) %}
+							<a href="{{ path('app_public_products', { category: currentCategory|default(null), collection: collection.id }|filter(v => v is not null)) }}" class="{{ base_btn_class }} {{ is_active ? active_class : inactive_class }}">
+								{{ collection.label }}
+							</a>
+						{% endfor %}
+
+					</div>
+				</nav>
+			{% endif %}
+		</div>
+
+		{# GRID DES PRODUITS #}
+		<div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-4">
+			{% for product in products %}
+				<div class="rounded-2xl bg-white shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+					<twig:product_card :product="product"/>
+				</div>
+			{% else %}
+				<p class="text-center text-gray-500 col-span-full py-12">
+					Aucun produit disponible pour cette sélection.
+				</p>
+			{% endfor %}
+		</div>
 	</div>
-
-	{# GRID DES PRODUITS #}
-	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 ">
-
-	
-
-		{% for product in products %}
-			<twig:product_card :product="product"/>
-		{% else %}
-			{# Le bloc "else" dans un "for" est la méthode Twig recommandée pour gérer une liste vide #}
-			<p class="text-center text-gray-500 col-span-full">
-				Aucun produit disponible pour cette catégorie.
-			</p>
-		{% endfor %}
-	</div>
-
 {% endblock %}

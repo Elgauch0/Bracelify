@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\ProductCollectionRepository;
 
 
 final class PublicController extends AbstractController
@@ -24,25 +25,29 @@ final class PublicController extends AbstractController
         return $this->render('public/index.html.twig');
     }
 
-    #[Route('/products', name: 'app_public_products', methods: ['GET'])]
-    public function products(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
-    {
-        $categoryId = $request->query->get('category');
+   #[Route('/products', name: 'app_public_products', methods: ['GET'])]
+public function products(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository, ProductCollectionRepository $productCollectionRepository): Response
+{
+    $categoryId = $request->query->filter('category', null, FILTER_VALIDATE_INT, ['flags' => FILTER_NULL_ON_FAILURE]);
+    $collectionId = $request->query->filter('collection', null, FILTER_VALIDATE_INT, ['flags' => FILTER_NULL_ON_FAILURE]);
 
-        if ($categoryId) {
-            $products = $productRepository->findAvailableProductsForCategory($categoryId);
-        } else {
-            $products = $productRepository->findAvailableProducts();
-        }
+    $products = $productRepository->findAvailableProductsWithFilters($categoryId, $collectionId);
+    $categories = $categoryRepository->findAll();
+    $collections = $productCollectionRepository->findAll();
 
-        $categories = $categoryRepository->findAll();
+    return $this->render('public/products.html.twig', [
+        'products' => $products,
+        'categories' => $categories,
+        'collections' => $collections,
+        'currentCategory' => $categoryId,
+        'currentCollection' => $collectionId,
+    ]);
+}
 
-        return $this->render('public/products.html.twig', [
-            'products' => $products,
-            'categories' => $categories,
-            'currentCategory' => $categoryId,
-        ]);
-    }
+
+
+
+
 
     #[Route('/products/{id}', name: 'app_public_show', methods: ['GET', 'POST'])]
     public function show(Product $product, Request $request, CommentRepository $commentRepository, CommentService $commentService, EntityManagerInterface $em): Response
